@@ -1,3 +1,6 @@
+from tkinter import *
+from PIL import *
+
 class Robot:
 	def __init__(self, network):
 		print("ok")

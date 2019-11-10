@@ -1,6 +1,7 @@
+from tkinter import *
 from packages.graphique_interface import *
-from classes.robot import *
-from classes.network import *
+from client_classes.robot import *
+from client_classes.network import *
 
 network = Network("localhost", 12800)
 network.connection()

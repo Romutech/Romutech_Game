@@ -1,24 +1,96 @@
 import socket
+import os
+from carte import Carte
+from server_classes.robot import Robot
 
 hote = ''
 port = 12800
+cartes = []
 
-connexion_principale = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-connexion_principale.bind((hote, port))
-connexion_principale.listen(5)
-print("Le serveur écoute à présent sur le port {}".format(port))
+for nom_fichier in os.listdir("cartes"):
+    if nom_fichier.endswith(".txt"):
+        chemin = os.path.join("cartes", nom_fichier)
+        nom_carte = nom_fichier[:-3].lower()
+        with open(chemin, "r") as fichier:
+            contenu = fichier.read()
+            cartes.append(Carte(nom_carte, contenu))
+print("Labyrinthes existants :")
+for i, carte in enumerate(cartes):
+    print("  {} - {}".format(i + 1, carte.nom))
 
-connexion_avec_client, infos_connexion = connexion_principale.accept()
+number_of_cards = i + 1
 
-msg_recu = b""
-while msg_recu != b"fin":
-    msg_recu = connexion_avec_client.recv(1024)
-    msg_recu = msg_recu.decode()
-    print(msg_recu)
-    text = "Le serveur a recu le message : " + msg_recu 
-    text = text.encode()
-    connexion_avec_client.send(text)
+win = False
+loop = True
+chosen_card = {}
 
-print("Fermeture de la connexion")
-connexion_avec_client.close()
-connexion_principale.close()
+while True:
+	try:
+		choose = int(input("\nEntrez un numéro de labyrinthe pour commencer à jouer : "))
+		if 0 == choose :
+			raise IndexError
+		chosen_card = cartes[choose-1]		
+# ====================================================================
+		connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		connection.bind((hote, port))
+		connection.listen(5)
+		connection_with_client, infos_connexion = connection.accept()
+		message_received = b""
+		while message_received != b"fin":
+			message_received = connection_with_client.recv(1024)
+			message_received = message_received.decode()
+			text = chosen_card.get_labyrinth_in_string()
+			connection_with_client.send(text.encode())
+
+		print("Fermeture de la connexion")
+		connection_with_client.close()
+		connection.close()
+# ======================================================================
+		while True:
+			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+			robot = Robot(starting_position_of_the_robot)
+			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
+				break
+		
+	except ValueError as e:
+		print("Veuillez saisir un nombre")
+	except IndexError as e:
+		print("Veuillez saisir une carte qui existante")
+	else:
+		break
+while win == False and loop :
+	i = 0
+	order = str(input("Saisissez une lettre pour déplacer le robot 'n' 's' 'e' 'o' ou saisissez 'q' pour quitter le jeu: "))
+
+	if order.upper() == 'Q':
+		print('Vous avez choisi de quitter le jeu, vous pourrez reprendre votre partie plus tard, si vous le souhaitez. \nAu revoir !')
+		loop = False
+		break
+
+	if robot.the_direction_is_valid(order) == False or robot.number_of_move_box_is_valid(order) == False:
+		continue
+
+	if len(order[1:]) == 0:
+		number_of_boxes = 1
+	else:
+		number_of_boxes = int(order[1:])
+
+	while i < number_of_boxes:
+		position = robot.displacement(order)
+
+		if labyrinth.positioning_is_validated(position) == False:
+			print("vous ne pouvez pas aller à cet endroit car un obstacle vous en empeche ! ")
+			break
+		robot.set_position(position)
+		labyrinth.clear_the_robot_in_maze(labyrinth.grille)
+		if labyrinth.is_win(position):
+			win = True
+			print('  *  *  *')
+			print('   \ | /')
+			print(" *-OOOO-*  *************************************")
+			print("  OOO      * Félicitations ! Vous avez gagné ! *")
+			print(" OO        *************************************")
+			print("O\n")
+			break
+		i += 1
+	
