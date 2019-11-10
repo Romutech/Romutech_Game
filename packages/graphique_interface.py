@@ -117,7 +117,7 @@ class GraphiqueInterface(Frame):
 		label_status.pack()
 		message_status = Label(frame_status, bg="#A09F9F", text="ex Attendez votre tour pour jouer")
 		message_status.pack()
-		label_status = Label(frame_status, bg="#F1F0F0", text="")
+		label_status = Label(frame_status, bg="#F1F0F0")
 		label_status.pack()	
 		
 	def show_menu(self):
@@ -138,13 +138,13 @@ class GraphiqueInterface(Frame):
 		label_menu.pack(side="left")
 		exit_button = Button(frame_menu, text="Quitter le jeu", activeforeground="red", command=self.quit_application)
 		exit_button.pack(side="right")
-		label_menu = Label(frame_menu, bg="#61DEFD", text="")
+		label_menu = Label(frame_menu, bg="#61DEFD")
 		label_menu.pack()
-		label_menu = Label(frame_menu, bg="#61DEFD", text="")
+		label_menu = Label(frame_menu, bg="#61DEFD")
 		label_menu.pack()
 
 	def show_labyrinthe(self):
-		frame_game = Frame(self.frame_left,)
+		frame_game = Frame(self.frame_left)
 		frame_game.pack()
 		label_menu = Label(frame_game, text="LABYRINTHE")
 		label_menu.pack(side="top")
@@ -152,22 +152,17 @@ class GraphiqueInterface(Frame):
 		self.labyrinthe.pack()
 
 	def quit_application(self):
-		print("test")
 		self.quit()
 		self.destroy()
 
 	def moving_the_robot_north(self):
-		received_message = self.robot.moving_north(self.number_of_boxes)
-		self.labyrinthe["text"] = received_message
+		self.labyrinthe["text"] = self.robot.moving_north(self.number_of_boxes)
 
 	def moving_the_robot_south(self):
-		received_message = self.robot.moving_south(self.number_of_boxes)
-		self.labyrinthe["text"] = received_message
+		self.labyrinthe["text"] = self.robot.moving_south(self.number_of_boxes)
 
 	def moving_the_robot_east(self):
-		received_message = self.robot.moving_east(self.number_of_boxes)
-		self.labyrinthe["text"] = received_message
+		self.labyrinthe["text"] = self.robot.moving_east(self.number_of_boxes)
 
 	def moving_the_robot_west(self):
-		received_message = self.robot.moving_west(self.number_of_boxes)
-		self.labyrinthe["text"] = received_message
+		self.labyrinthe["text"] = self.robot.moving_west(self.number_of_boxes)
