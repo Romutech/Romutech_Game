@@ -8,7 +8,6 @@ class Network:
 	def connection(self):
 		self.server_connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.server_connection.connect((self.hote, self.port))
-		print("Connexion établie avec le serveur sur le port {}".format(self.port))
 
 	def message_exchange_with_server(self, message):
 		self.server_connection.send(message.encode())
