@@ -10,7 +10,7 @@ class Network:
 		self.server_connection.connect((self.hote, self.port))
 		print("Connexion établie avec le serveur sur le port {}".format(self.port))
 
-	def send_message(self, message):
-		print('zsd')
+	def message_exchange_with_server(self, message):
 		self.server_connection.send(message.encode())
-
+		received_message = self.server_connection.recv(1024)
+		return received_message.decode()
