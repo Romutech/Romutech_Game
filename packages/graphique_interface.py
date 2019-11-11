@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter.font import Font
 
 class GraphiqueInterface(Frame):
 	def __init__(self, window, robot):
@@ -6,11 +7,11 @@ class GraphiqueInterface(Frame):
 		self.window = window
 		self.robot = robot
 		self.window.title("Jeu du labyrinthe")
-		self.window.minsize(1100, 755)
+		self.window.minsize(755, 755)
 		self.show_title()
 		self.show_margins()
 		self.show_sections()
-		
+
 	def show_title(self):
 		message_title = Label(self.window, text="BIENVENUE DANS LE JEU DU LABYRINTHE")
 		message_title.pack()
@@ -111,8 +112,8 @@ class GraphiqueInterface(Frame):
 		label_padding_right.pack(side="right")
 		label_padding_right = Label(frame_status, bg="#F1F0F0", text="           ")
 		label_padding_right.pack(side="left")
-		labyrinthe = Label(frame_status, bg="#F1F0F0", text="STATUT")
-		labyrinthe.pack()
+		title_status = Label(frame_status, bg="#F1F0F0", text="STATUT")
+		title_status.pack()
 		label_status = Label(frame_status, bg="#F1F0F0", text="                             Messages :                            ")
 		label_status.pack()
 		message_status = Label(frame_status, bg="#A09F9F", text="ex Attendez votre tour pour jouer")
@@ -131,7 +132,7 @@ class GraphiqueInterface(Frame):
 		title_menu.pack()
 		label_menu = Label(frame_menu, bg="#61DEFD", text="                      Faites votre choix !                      ")
 		label_menu.pack()
-		exit_button = Button(frame_menu, text="Quitter la partie", overrelief="sunken", activeforeground="orange", command="")
+		exit_button = Button(frame_menu, text="lancer la partie", overrelief="sunken", activeforeground="orange", command=self.show_labyrinthe)
 		exit_button.pack(side="left")
 		exit_button.flash()
 		label_menu = Label(frame_menu, bg="#61DEFD", text=" ")
@@ -146,17 +147,19 @@ class GraphiqueInterface(Frame):
 	def show_labyrinthe(self):
 		frame_game = Frame(self.frame_left)
 		frame_game.pack()
-		label_menu = Label(frame_game, text="LABYRINTHE")
-		label_menu.pack(side="top")
-		self.labyrinthe = Label(frame_game, bg="#000000", fg="#fff", text="000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n000000 0000    X 0000 000. 0    X0 0000    X0 0000    X 00000 . 00 00.            000.          0.  0\n")
-		self.labyrinthe.pack()
+		police= Font(self, size=30, family='Courier')
+		police.config(size=30, family='Courier')
+		self.labyrinthe = Label(frame_game, bg="#000000", fg="#fff", font=police)
+		self.labyrinthe.pack(side="left")
+		marging_middle = Label(frame_game, text="  ")
+		marging_middle.pack(side="left")
 
 	def quit_application(self):
 		self.quit()
 		self.destroy()
 
 	def moving_the_robot_north(self):
-		self.labyrinthe["text"] = self.robot.moving_north(self.number_of_boxes)
+		self.labyrinthe["text"] = self.robot.moving_south(self.number_of_boxes)
 
 	def moving_the_robot_south(self):
 		self.labyrinthe["text"] = self.robot.moving_south(self.number_of_boxes)
@@ -166,3 +169,6 @@ class GraphiqueInterface(Frame):
 
 	def moving_the_robot_west(self):
 		self.labyrinthe["text"] = self.robot.moving_west(self.number_of_boxes)
+
+
+
