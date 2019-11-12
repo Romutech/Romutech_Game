@@ -159,16 +159,16 @@ class GraphiqueInterface(Frame):
 		self.destroy()
 
 	def moving_the_robot_north(self):
-		self.labyrinthe["text"] = self.robot.moving_south(self.number_of_boxes)
+		self.labyrinthe["text"] = self.robot.displacement("north", self.number_of_boxes)
 
 	def moving_the_robot_south(self):
-		self.labyrinthe["text"] = self.robot.moving_south(self.number_of_boxes)
+		self.labyrinthe["text"] = self.robot.displacement("south", self.number_of_boxes)
 
 	def moving_the_robot_east(self):
-		self.labyrinthe["text"] = self.robot.moving_east(self.number_of_boxes)
+		self.labyrinthe["text"] = self.robot.displacement("east", self.number_of_boxes)
 
 	def moving_the_robot_west(self):
-		self.labyrinthe["text"] = self.robot.moving_west(self.number_of_boxes)
+		self.labyrinthe["text"] = self.robot.displacement("west", self.number_of_boxes)
 
 
 

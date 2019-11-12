@@ -1,6 +1,6 @@
 import socket
 import os
-from carte import Carte
+from server_classes.carte import Carte
 from server_classes.robot import Robot
 
 hote = ''
