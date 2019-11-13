@@ -40,9 +40,9 @@ class Robot:
         elif letter.upper() == self.cardinal_points['South']:
             ordinate += 1
         elif letter.upper() == self.cardinal_points['East']:
-            abscissa -= 1
-        elif letter.upper() == self.cardinal_points['West']:
             abscissa += 1
+        elif letter.upper() == self.cardinal_points['West']:
+            abscissa -= 1
         return (ordinate, abscissa)
 
 
