@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.font import Font
+import re
 
 class GraphiqueInterface(Frame):
 	def __init__(self, window, robot):
@@ -116,8 +117,8 @@ class GraphiqueInterface(Frame):
 		title_status.pack()
 		label_status = Label(frame_status, bg="#F1F0F0", text="                             Messages :                            ")
 		label_status.pack()
-		message_status = Label(frame_status, bg="#A09F9F", text="ex Attendez votre tour pour jouer")
-		message_status.pack()
+		self.message_status = Label(frame_status, bg="#A09F9F", text="ex Attendez votre tour pour jouer")
+		self.message_status.pack()
 		label_status = Label(frame_status, bg="#F1F0F0")
 		label_status.pack()	
 		
@@ -159,16 +160,32 @@ class GraphiqueInterface(Frame):
 		self.destroy()
 
 	def moving_the_robot_north(self):
-		self.labyrinthe["text"] = self.robot.displacement("north", self.number_of_boxes)
+		data = self.robot.displacement("n", self.number_of_boxes)
+		if re.search(r"^\[status\]", data):
+			self.message_status['text'] = data
+		else:
+			self.labyrinthe["text"] = data
 
 	def moving_the_robot_south(self):
-		self.labyrinthe["text"] = self.robot.displacement("south", self.number_of_boxes)
+		data = self.robot.displacement("s", self.number_of_boxes)
+		if re.search(r"^\[status\]", data):
+			self.message_status['text'] = data
+		else:
+			self.labyrinthe["text"] = data
 
 	def moving_the_robot_east(self):
-		self.labyrinthe["text"] = self.robot.displacement("east", self.number_of_boxes)
+		data = self.robot.displacement("e", self.number_of_boxes)
+		if re.search(r"^\[status\]", data):
+			self.message_status['text'] = data
+		else:
+			self.labyrinthe["text"] = data
 
 	def moving_the_robot_west(self):
-		self.labyrinthe["text"] = self.robot.displacement("west", self.number_of_boxes)
+		data = self.robot.displacement("o", self.number_of_boxes)
+		if re.search(r"^\[status\]", data):
+			self.message_status['text'] = data
+		else:
+			self.labyrinthe["text"] = data
 
 
 
