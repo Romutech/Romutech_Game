@@ -84,9 +84,7 @@ while True:
 					labyrinth.clear_the_robot_in_maze(labyrinth.grille)
 					data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
 
-
 					text = "[labyrinth]" + data
-					
 
 				if labyrinth.is_win(position):
 					win = True

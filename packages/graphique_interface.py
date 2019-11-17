@@ -198,6 +198,3 @@ class GraphiqueInterface(Frame):
 			p = re.compile('\[labyrinth\]')	
 			self.labyrinthe["text"] = p.sub('', data)
 			self.message_status['text'] = ""
-
-
-
