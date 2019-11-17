@@ -85,7 +85,7 @@ while True:
 					data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
 
 
-					text = data
+					text = "[labyrinth]" + data
 					
 
 				if labyrinth.is_win(position):
@@ -98,7 +98,7 @@ while True:
 					print("O\n")
 					break
 				if labyrinth.positioning_is_validated(position) == False:
-					text = data + "\nImpossible d'aller là !\n"
+					text = "[status]" + "Impossible d'aller là !"
 				i += 1
 
 			connection_with_client.send(text.encode())

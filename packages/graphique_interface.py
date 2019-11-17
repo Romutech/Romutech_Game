@@ -161,31 +161,43 @@ class GraphiqueInterface(Frame):
 
 	def moving_the_robot_north(self):
 		data = self.robot.displacement("n", self.number_of_boxes)
-		if re.search(r"^\[status\]", data):
-			self.message_status['text'] = data
+		if re.search(r"\[status\]", data):
+			p = re.compile('\[status\]')	
+			self.message_status['text'] = p.sub('', data)
 		else:
-			self.labyrinthe["text"] = data
+			p = re.compile('\[labyrinth\]')	
+			self.labyrinthe["text"] = p.sub('', data)
+			self.message_status['text'] = ""
 
 	def moving_the_robot_south(self):
 		data = self.robot.displacement("s", self.number_of_boxes)
-		if re.search(r"^\[status\]", data):
-			self.message_status['text'] = data
+		if re.search(r"\[status\]", data):
+			p = re.compile('\[status\]')	
+			self.message_status['text'] = p.sub('', data)
 		else:
-			self.labyrinthe["text"] = data
+			p = re.compile('\[labyrinth\]')	
+			self.labyrinthe["text"] = p.sub('', data)
+			self.message_status['text'] = ""
 
 	def moving_the_robot_east(self):
 		data = self.robot.displacement("e", self.number_of_boxes)
-		if re.search(r"^\[status\]", data):
-			self.message_status['text'] = data
+		if re.search(r"\[status\]", data):
+			p = re.compile('\[status\]')	
+			self.message_status['text'] = p.sub('', data)
 		else:
-			self.labyrinthe["text"] = data
+			p = re.compile('\[labyrinth\]')	
+			self.labyrinthe["text"] = p.sub('', data)
+			self.message_status['text'] = ""
 
 	def moving_the_robot_west(self):
 		data = self.robot.displacement("o", self.number_of_boxes)
-		if re.search(r"^\[status\]", data):
-			self.message_status['text'] = data
+		if re.search(r"\[status\]", data):
+			p = re.compile('\[status\]')	
+			self.message_status['text'] = p.sub('', data)
 		else:
-			self.labyrinthe["text"] = data
+			p = re.compile('\[labyrinth\]')	
+			self.labyrinthe["text"] = p.sub('', data)
+			self.message_status['text'] = ""
 
 
 
