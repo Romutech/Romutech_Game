@@ -42,7 +42,7 @@ while True:
 		connection.listen(5)
 		connection_with_client, infos_connexion = connection.accept()
 		message_received = b""
-		while message_received != b"fin":
+		while win == False:
 			message_received = connection_with_client.recv(1024)
 			message_received = message_received.decode()
 			
@@ -92,17 +92,14 @@ while True:
 
 					text = "[labyrinth]" + data
 
-			# if labyrinth.is_win(position):
-			# 	win = True
-			# 	print('  *  *  *')
-			# 	print('   \ | /')
-			# 	print(" *-OOOO-*  *************************************")
-			# 	print("  OOO      * Félicitations ! Vous avez gagné ! *")
-			# 	print(" OO        *************************************")
-			# 	print("O\n")
-			# 	break
-			
-			connection_with_client.send(text.encode())
+			if labyrinth.is_win(position):
+				win = True
+				connection_with_client.send("[win] Bravo ! \nVous avez gagné !".encode())
+				# connection_with_client.close()
+				# connection.close()
+				break
+			if win == False:
+				connection_with_client.send(text.encode())
 
 		print("Fermeture de la connexion")
 		connection_with_client.close()
