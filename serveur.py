@@ -1,7 +1,8 @@
 import socket
 import os
-from carte import Carte
+from server_classes.carte import Carte
 from server_classes.robot import Robot
+from server_classes.labyrinthe import Labyrinthe
 
 hote = ''
 port = 12800
@@ -20,6 +21,7 @@ for i, carte in enumerate(cartes):
 
 number_of_cards = i + 1
 
+determine_position = True
 win = False
 loop = True
 chosen_card = {}
@@ -29,18 +31,75 @@ while True:
 		choose = int(input("\nEntrez un numéro de labyrinthe pour commencer à jouer : "))
 		if 0 == choose :
 			raise IndexError
-		chosen_card = cartes[choose-1]		
+		chosen_card = cartes[choose-1]
+		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'X', 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
+			
+
+
 # ====================================================================
 		connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		connection.bind((hote, port))
 		connection.listen(5)
 		connection_with_client, infos_connexion = connection.accept()
 		message_received = b""
-		while message_received != b"fin":
+		while win == False:
 			message_received = connection_with_client.recv(1024)
 			message_received = message_received.decode()
-			text = chosen_card.get_labyrinth_in_string()
-			connection_with_client.send(text.encode())
+			
+			i = 0
+			
+
+			while determine_position:
+				determine_position = False
+				starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+				robot = Robot(starting_position_of_the_robot)
+				if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
+					break
+
+			order = message_received
+
+			if order.upper() == 'Q':
+				print('Vous avez choisi de quitter le jeu, vous pourrez reprendre votre partie plus tard, si vous le souhaitez. \nAu revoir !')
+				loop = False
+				break
+
+			if robot.the_direction_is_valid(order) == False or robot.number_of_move_box_is_valid(order) == False:
+				continue
+			
+			if len(order[1:]) == 0:
+				number_of_boxes = 1
+			else:
+				number_of_boxes = int(order[1:])
+
+			i = 0
+
+			while i < number_of_boxes:
+				letter = str(order[0])
+
+				position = robot.displacement(order, labyrinth)
+
+				i += 1
+
+				result = labyrinth.positioning_is_validated(position)
+
+				if result == False:
+					text = "[status]" + "Impossible d'aller là !"
+
+				if result == True:
+					robot.set_position(position)
+					labyrinth.clear_the_robot_in_maze(labyrinth.grille)
+					data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
+
+					text = "[labyrinth]" + data
+
+			if labyrinth.is_win(position):
+				win = True
+				connection_with_client.send("[win] Bravo ! \nVous avez gagné !".encode())
+				# connection_with_client.close()
+				# connection.close()
+				break
+			if win == False:
+				connection_with_client.send(text.encode())
 
 		print("Fermeture de la connexion")
 		connection_with_client.close()
@@ -60,37 +119,4 @@ while True:
 		break
 while win == False and loop :
 	i = 0
-	order = str(input("Saisissez une lettre pour déplacer le robot 'n' 's' 'e' 'o' ou saisissez 'q' pour quitter le jeu: "))
 
-	if order.upper() == 'Q':
-		print('Vous avez choisi de quitter le jeu, vous pourrez reprendre votre partie plus tard, si vous le souhaitez. \nAu revoir !')
-		loop = False
-		break
-
-	if robot.the_direction_is_valid(order) == False or robot.number_of_move_box_is_valid(order) == False:
-		continue
-
-	if len(order[1:]) == 0:
-		number_of_boxes = 1
-	else:
-		number_of_boxes = int(order[1:])
-
-	while i < number_of_boxes:
-		position = robot.displacement(order)
-
-		if labyrinth.positioning_is_validated(position) == False:
-			print("vous ne pouvez pas aller à cet endroit car un obstacle vous en empeche ! ")
-			break
-		robot.set_position(position)
-		labyrinth.clear_the_robot_in_maze(labyrinth.grille)
-		if labyrinth.is_win(position):
-			win = True
-			print('  *  *  *')
-			print('   \ | /')
-			print(" *-OOOO-*  *************************************")
-			print("  OOO      * Félicitations ! Vous avez gagné ! *")
-			print(" OO        *************************************")
-			print("O\n")
-			break
-		i += 1
-	

@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.font import Font
+import re
 
 class GraphiqueInterface(Frame):
 	def __init__(self, window, robot):
@@ -11,6 +12,7 @@ class GraphiqueInterface(Frame):
 		self.show_title()
 		self.show_margins()
 		self.show_sections()
+		self.win = False
 
 	def show_title(self):
 		message_title = Label(self.window, text="BIENVENUE DANS LE JEU DU LABYRINTHE")
@@ -35,31 +37,31 @@ class GraphiqueInterface(Frame):
 		self.frame_bottom.pack(side="bottom")
 
 	def show_displacement(self):
-		self.number_of_boxes = StringVar()
-		frame_displacement = Frame(self.frame_right, bg="#DDE0FE")
-		frame_displacement.pack()
-		label_padding_right = Label(frame_displacement, bg="#DDE0FE", text="          ")
-		label_padding_right.pack(side="right")
-		label_padding_right = Label(frame_displacement, bg="#DDE0FE", text="          ")
-		label_padding_right.pack(side="left")
-		title_displacement = Label(frame_displacement, bg="#DDE0FE", text="DEPLACEMENT")
-		title_displacement.pack()
-		label_displacement = Label(frame_displacement, bg="#DDE0FE", text="Saisissez dans le champ jaune, le nombre de \n cases à se déplacer ET cliquez sur la direction")
-		label_displacement.pack()
-		ligne_texte = Entry(frame_displacement, bg="yellow", textvariable=self.number_of_boxes, width=4)
-		ligne_texte.pack()
-		label_displacement = Label(frame_displacement, bg="#DDE0FE")
-		label_displacement.pack()
-		exit_button = Button(frame_displacement, activeforeground="green", text="Nord", command=self.moving_the_robot_north)
-		exit_button.pack(side="top", fill=Y)
-		label_displacement = Label(frame_displacement, bg="#DDE0FE")
-		label_displacement.pack(side="bottom")
-		exit_button = Button(frame_displacement, activeforeground="green", text="Sud", command=self.moving_the_robot_south)
-		exit_button.pack(side="bottom", fill=Y)
-		exit_button = Button(frame_displacement, activeforeground="green", text="Est", command=self.moving_the_robot_east)
-		exit_button.pack(side="right", fill=X)
-		exit_button = Button(frame_displacement, activeforeground="green", text="Ouest", command=self.moving_the_robot_west)
-		exit_button.pack(side="left", fill=X)
+			self.number_of_boxes = StringVar()
+			frame_displacement = Frame(self.frame_right, bg="#DDE0FE")
+			frame_displacement.pack()
+			label_padding_right = Label(frame_displacement, bg="#DDE0FE", text="          ")
+			label_padding_right.pack(side="right")
+			label_padding_right = Label(frame_displacement, bg="#DDE0FE", text="          ")
+			label_padding_right.pack(side="left")
+			title_displacement = Label(frame_displacement, bg="#DDE0FE", text="DEPLACEMENT")
+			title_displacement.pack()
+			label_displacement = Label(frame_displacement, bg="#DDE0FE", text="Saisissez dans le champ jaune, le nombre de \n cases à se déplacer ET cliquez sur la direction")
+			label_displacement.pack()
+			ligne_texte = Entry(frame_displacement, bg="yellow", textvariable=self.number_of_boxes, width=4)
+			ligne_texte.pack()
+			label_displacement = Label(frame_displacement, bg="#DDE0FE")
+			label_displacement.pack()
+			exit_button = Button(frame_displacement, activeforeground="green", text="Nord", command=self.moving_the_robot_north)
+			exit_button.pack(side="top", fill=Y)
+			label_displacement = Label(frame_displacement, bg="#DDE0FE")
+			label_displacement.pack(side="bottom")
+			exit_button = Button(frame_displacement, activeforeground="green", text="Sud", command=self.moving_the_robot_south)
+			exit_button.pack(side="bottom", fill=Y)
+			exit_button = Button(frame_displacement, activeforeground="green", text="Est", command=self.moving_the_robot_east)
+			exit_button.pack(side="right", fill=X)
+			exit_button = Button(frame_displacement, activeforeground="green", text="Ouest", command=self.moving_the_robot_west)
+			exit_button.pack(side="left", fill=X)
 
 	def show_action_wall_door(self):
 		frame_wall_door = Frame(self.frame_right, bg="#C7FBCC")
@@ -116,8 +118,8 @@ class GraphiqueInterface(Frame):
 		title_status.pack()
 		label_status = Label(frame_status, bg="#F1F0F0", text="                             Messages :                            ")
 		label_status.pack()
-		message_status = Label(frame_status, bg="#A09F9F", text="ex Attendez votre tour pour jouer")
-		message_status.pack()
+		self.message_status = Label(frame_status, bg="#A09F9F", text="ex Attendez votre tour pour jouer")
+		self.message_status.pack()
 		label_status = Label(frame_status, bg="#F1F0F0")
 		label_status.pack()	
 		
@@ -159,16 +161,69 @@ class GraphiqueInterface(Frame):
 		self.destroy()
 
 	def moving_the_robot_north(self):
-		self.labyrinthe["text"] = self.robot.moving_south(self.number_of_boxes)
+		if self.win == False:
+			
+			data = self.robot.displacement("n", self.number_of_boxes)
+			if re.search(r"\[status\]", data):
+				p = re.compile('\[status\]')	
+				self.message_status['text'] = p.sub('', data)
+			elif re.search(r"\[win\]", data):
+				p = re.compile('\[win\]')	
+				self.labyrinthe["text"] = p.sub('', data)
+				self.win = True
+				self.message_status['text'] = ""
+			else:
+				p = re.compile('\[labyrinth\]')	
+				self.labyrinthe["text"] = p.sub('', data)
+				self.message_status['text'] = ""
 
 	def moving_the_robot_south(self):
-		self.labyrinthe["text"] = self.robot.moving_south(self.number_of_boxes)
+		if self.win == False:
+			
+			data = self.robot.displacement("s", self.number_of_boxes)
+			if re.search(r"\[status\]", data):
+				p = re.compile('\[status\]')	
+				self.message_status['text'] = p.sub('', data)
+			elif re.search(r"\[win\]", data):
+				p = re.compile('\[win\]')	
+				self.labyrinthe["text"] = p.sub('', data)
+				self.win = True
+				self.message_status['text'] = ""
+			else:
+				p = re.compile('\[labyrinth\]')	
+				self.labyrinthe["text"] = p.sub('', data)
+				self.message_status['text'] = ""
 
 	def moving_the_robot_east(self):
-		self.labyrinthe["text"] = self.robot.moving_east(self.number_of_boxes)
+		if self.win == False:
+			
+			data = self.robot.displacement("e", self.number_of_boxes)
+			if re.search(r"\[status\]", data):
+				p = re.compile('\[status\]')	
+				self.message_status['text'] = p.sub('', data)
+			elif re.search(r"\[win\]", data):
+				p = re.compile('\[win\]')	
+				self.labyrinthe["text"] = p.sub('', data)
+				self.win = True
+				self.message_status['text'] = ""
+			else:
+				p = re.compile('\[labyrinth\]')	
+				self.labyrinthe["text"] = p.sub('', data)
+				self.message_status['text'] = ""
 
 	def moving_the_robot_west(self):
-		self.labyrinthe["text"] = self.robot.moving_west(self.number_of_boxes)
-
-
-
+		if self.win == False:
+			
+			data = self.robot.displacement("w", self.number_of_boxes)
+			if re.search(r"\[status\]", data):
+				p = re.compile('\[status\]')	
+				self.message_status['text'] = p.sub('', data)
+			elif re.search(r"\[win\]", data):
+				p = re.compile('\[win\]')	
+				self.labyrinthe["text"] = p.sub('', data)
+				self.win = True
+				self.message_status['text'] = ""
+			else:
+				p = re.compile('\[labyrinth\]')	
+				self.labyrinthe["text"] = p.sub('', data)
+				self.message_status['text'] = ""
