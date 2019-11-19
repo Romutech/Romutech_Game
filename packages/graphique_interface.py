@@ -190,7 +190,7 @@ class GraphiqueInterface(Frame):
 			self.message_status['text'] = ""
 
 	def moving_the_robot_west(self):
-		data = self.robot.displacement("o", self.number_of_boxes)
+		data = self.robot.displacement("w", self.number_of_boxes)
 		if re.search(r"\[status\]", data):
 			p = re.compile('\[status\]')	
 			self.message_status['text'] = p.sub('', data)

@@ -65,40 +65,43 @@ while True:
 
 			if robot.the_direction_is_valid(order) == False or robot.number_of_move_box_is_valid(order) == False:
 				continue
-
+			
 			if len(order[1:]) == 0:
 				number_of_boxes = 1
 			else:
 				number_of_boxes = int(order[1:])
 
-			print(number_of_boxes)
+			i = 0
+
 			while i < number_of_boxes:
-				position = robot.displacement(order)
+				letter = str(order[0])
 
+				position = robot.displacement(order, labyrinth)
 
-				print("test 4")
-				if labyrinth.positioning_is_validated(position) == True:
-					
+				i += 1
 
+				result = labyrinth.positioning_is_validated(position)
+
+				if result == False:
+					text = "[status]" + "Impossible d'aller là !"
+
+				if result == True:
 					robot.set_position(position)
 					labyrinth.clear_the_robot_in_maze(labyrinth.grille)
 					data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
 
 					text = "[labyrinth]" + data
 
-				if labyrinth.is_win(position):
-					win = True
-					print('  *  *  *')
-					print('   \ | /')
-					print(" *-OOOO-*  *************************************")
-					print("  OOO      * Félicitations ! Vous avez gagné ! *")
-					print(" OO        *************************************")
-					print("O\n")
-					break
-				if labyrinth.positioning_is_validated(position) == False:
-					text = "[status]" + "Impossible d'aller là !"
-				i += 1
-
+			# if labyrinth.is_win(position):
+			# 	win = True
+			# 	print('  *  *  *')
+			# 	print('   \ | /')
+			# 	print(" *-OOOO-*  *************************************")
+			# 	print("  OOO      * Félicitations ! Vous avez gagné ! *")
+			# 	print(" OO        *************************************")
+			# 	print("O\n")
+			# 	break
+			
 			connection_with_client.send(text.encode())
 
 		print("Fermeture de la connexion")
