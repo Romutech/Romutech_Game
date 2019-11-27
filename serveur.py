@@ -1,4 +1,4 @@
-import socket
+﻿import socket
 import os
 from server_classes.carte import Carte
 from server_classes.robot import Robot
@@ -35,7 +35,6 @@ while True:
 		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'X', 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
 			
 
-
 # ====================================================================
 		connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		connection.bind((hote, port))
@@ -59,7 +58,6 @@ while True:
 			order = message_received
 
 			if order.upper() == 'Q':
-				print('Vous avez choisi de quitter le jeu, vous pourrez reprendre votre partie plus tard, si vous le souhaitez. \nAu revoir !')
 				loop = False
 				break
 
@@ -73,24 +71,29 @@ while True:
 
 			i = 0
 
-			while i < number_of_boxes:
-				letter = str(order[0])
+			letter = str(order[0])
 
-				position = robot.displacement(order, labyrinth)
+			old_location = robot.get_position()
+
+			while i < number_of_boxes:
+				print ("v")
+				position = robot.displacement(letter, labyrinth)
 
 				i += 1
 
 				result = labyrinth.positioning_is_validated(position)
 
 				if result == False:
+					robot.set_position(old_location)
 					text = "[status]" + "Impossible d'aller là !"
+					break
 
 				if result == True:
 					robot.set_position(position)
 					labyrinth.clear_the_robot_in_maze(labyrinth.grille)
-					data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
+					data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, position)
 
-					text = "[labyrinth]" + data
+				text = "[labyrinth]" + data
 
 			if labyrinth.is_win(position):
 				win = True

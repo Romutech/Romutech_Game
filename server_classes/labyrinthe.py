@@ -62,7 +62,6 @@ class Labyrinthe:
                 return value[0], value[1]
 
         # if the robot was not found on the map, this position is determined randomly
-        print ("définition aléatoire de la position du robot")
         return (randrange(0, self.width), randrange(0, self.height))
 
 

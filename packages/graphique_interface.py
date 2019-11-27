@@ -157,6 +157,7 @@ class GraphiqueInterface(Frame):
 		marging_middle.pack(side="left")
 
 	def quit_application(self):
+		self.robot.displacement("q", self.number_of_boxes)
 		self.quit()
 		self.destroy()
 
