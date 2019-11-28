@@ -85,39 +85,12 @@ while True:
 				# On parcourt la liste des clients à lire
 				for client in clients_a_lire:
 					client.send(text.encode())
-					text =""
+					
 
 					# Client est de type socket
 					msg_recu = client.recv(1024)
 					# Peut planter si le message contient des caractères spéciaux
 					msg_recu = msg_recu.decode()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-				
-					
-					
-					i = 0
-
-					
 
 					order = msg_recu
 
@@ -168,7 +141,7 @@ while True:
 						client.send(text.encode())
 
 
-
+					text =""
 
 
 
