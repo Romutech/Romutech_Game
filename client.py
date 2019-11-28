@@ -8,7 +8,7 @@ network.connection()
 
 robot = Robot(network)
 
-graphique_interface = GraphiqueInterface(Tk(), robot)
+graphique_interface = GraphiqueInterface(Tk(), robot, network)
 graphique_interface.show_displacement()
 graphique_interface.show_action_wall_door()
 graphique_interface.show_action_transform_door_into_wall()

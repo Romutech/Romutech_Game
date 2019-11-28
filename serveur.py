@@ -1,4 +1,4 @@
-import socket
+﻿import socket
 import os
 from server_classes.carte import Carte
 from server_classes.robot import Robot
@@ -33,33 +33,37 @@ while True:
 			raise IndexError
 		chosen_card = cartes[choose-1]
 		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'X', 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
-			
-
-
 # ====================================================================
 		connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		connection.bind((hote, port))
 		connection.listen(5)
 		connection_with_client, infos_connexion = connection.accept()
 		message_received = b""
+
+		while determine_position:
+			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+			robot = Robot(starting_position_of_the_robot)
+			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
+				break
+		data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
+		text = "[labyrinth]" + data
+		
+
+		message_received = connection_with_client.recv(1024)
+		message_received = message_received.decode()
+		connection_with_client.send(text.encode())
+
 		while win == False:
 			message_received = connection_with_client.recv(1024)
 			message_received = message_received.decode()
 			
 			i = 0
-			
 
-			while determine_position:
-				determine_position = False
-				starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-				robot = Robot(starting_position_of_the_robot)
-				if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
-					break
+			
 
 			order = message_received
 
 			if order.upper() == 'Q':
-				print('Vous avez choisi de quitter le jeu, vous pourrez reprendre votre partie plus tard, si vous le souhaitez. \nAu revoir !')
 				loop = False
 				break
 
@@ -73,24 +77,28 @@ while True:
 
 			i = 0
 
-			while i < number_of_boxes:
-				letter = str(order[0])
+			letter = str(order[0])
 
-				position = robot.displacement(order, labyrinth)
+			old_location = robot.get_position()
+
+			while i < number_of_boxes:
+				position = robot.displacement(letter, labyrinth)
 
 				i += 1
 
 				result = labyrinth.positioning_is_validated(position)
 
 				if result == False:
+					robot.set_position(old_location)
 					text = "[status]" + "Impossible d'aller là !"
+					break
 
 				if result == True:
 					robot.set_position(position)
 					labyrinth.clear_the_robot_in_maze(labyrinth.grille)
-					data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
+					data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, position)
 
-					text = "[labyrinth]" + data
+				text = "[labyrinth]" + data
 
 			if labyrinth.is_win(position):
 				win = True
