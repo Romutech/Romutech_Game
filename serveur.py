@@ -33,27 +33,34 @@ while True:
 			raise IndexError
 		chosen_card = cartes[choose-1]
 		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'X', 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
-			
-
 # ====================================================================
 		connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		connection.bind((hote, port))
 		connection.listen(5)
 		connection_with_client, infos_connexion = connection.accept()
 		message_received = b""
+
+		while determine_position:
+			determine_position = False
+			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+			robot = Robot(starting_position_of_the_robot)
+			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
+				break
+		data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
+		text = "[labyrinth]" + data
+		
+
+		message_received = connection_with_client.recv(1024)
+		message_received = message_received.decode()
+		connection_with_client.send(text.encode())
+
 		while win == False:
 			message_received = connection_with_client.recv(1024)
 			message_received = message_received.decode()
 			
 			i = 0
-			
 
-			while determine_position:
-				determine_position = False
-				starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-				robot = Robot(starting_position_of_the_robot)
-				if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
-					break
+			
 
 			order = message_received
 
@@ -76,7 +83,6 @@ while True:
 			old_location = robot.get_position()
 
 			while i < number_of_boxes:
-				print ("v")
 				position = robot.displacement(letter, labyrinth)
 
 				i += 1
