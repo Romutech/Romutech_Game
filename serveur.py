@@ -41,7 +41,6 @@ while True:
 		message_received = b""
 
 		while determine_position:
-			determine_position = False
 			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
 			robot = Robot(starting_position_of_the_robot)
 			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
