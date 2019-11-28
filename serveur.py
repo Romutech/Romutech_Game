@@ -47,6 +47,14 @@ while True:
 		connexion_principale.listen(5)
 		print("Le serveur écoute à présent sur le port {}".format(port))
 
+		while determine_position:
+			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+			robot = Robot(starting_position_of_the_robot)
+			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
+				break
+		data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
+		text = "[labyrinth]" + data
+
 
 		serveur_lance = True
 		clients_connectes = []
@@ -82,7 +90,7 @@ while True:
 		            # Peut planter si le message contient des caractères spéciaux
 		            msg_recu = msg_recu.decode()
 		            print("Reçu {}".format(msg_recu))
-		            client.send(b"5 / 5")
+		            client.send(text.encode())
 		            if msg_recu == "fin":
 		                serveur_lance = False
 
@@ -90,18 +98,7 @@ while True:
 		# connection_with_client, infos_connexion = connection.accept()
 		# message_received = b""
 
-		while determine_position:
-			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-			robot = Robot(starting_position_of_the_robot)
-			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
-				break
-		data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
-		text = "[labyrinth]" + data
 		
-
-		message_received = connection_with_client.recv(1024)
-		message_received = message_received.decode()
-		connection_with_client.send(text.encode())
 
 		while win == False:
 			message_received = connection_with_client.recv(1024)
