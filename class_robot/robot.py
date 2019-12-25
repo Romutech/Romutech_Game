@@ -13,7 +13,7 @@ class Robot:
 
         self.ordinate = starting_position_of_the_robot[0]
         self.abscissa = starting_position_of_the_robot[1]
-        self.cardinal_points = {"North": 'N', "South": 'S', "East": 'E',"West": 'W'}
+        self.cardinal_points = {"North": 'N', "South": 'S', "East": 'E',"West": 'O'}
 
 
     def __repr__(self):
@@ -24,11 +24,12 @@ class Robot:
     	return (self.ordinate, self.abscissa)
 
 
-    def displacement(self, direction, labyrinth):
+    def displacement(self, direction):
 
         """Function allowing the robot to move according to the requested direction.
         It takes as parameter a string of characters"""
 
+        i = 0
         ordinate = self.ordinate
         abscissa = self.abscissa
 
@@ -39,10 +40,9 @@ class Robot:
         elif letter.upper() == self.cardinal_points['South']:
             ordinate += 1
         elif letter.upper() == self.cardinal_points['East']:
-            abscissa += 1
-        elif letter.upper() == self.cardinal_points['West']:
             abscissa -= 1
-   
+        elif letter.upper() == self.cardinal_points['West']:
+            abscissa += 1
         return (ordinate, abscissa)
 
 
