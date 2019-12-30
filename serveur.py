@@ -58,10 +58,17 @@ while True:
 	connexion_principale.bind((hote, port))
 	connexion_principale.listen(5)
 	print("Le serveur écoute à présent sur le port {}".format(port))
+	print("1")
 	serveur_lance = True
 	clients_connectes = []
 	message = "_"
-	connexions_demandees, wlist, xlist = select.select([connexion_principale], [], [], 0.05)
+	while loop == True:
+		connexions_demandees, wlist, xlist = select.select([connexion_principale], [], [], 0.05)
+		choice = input("on continue ? ")
+		if choice == "non":
+			loop = False
+
+		
 	for connexion in connexions_demandees:
 		connexion_avec_client, infos_connexion = connexion.accept()
 		clients_connectes.append(connexion_avec_client)
@@ -74,6 +81,7 @@ while True:
 	except select.error:
 		pass
 	else:
+		print("2")
 		for client in clients_a_lire:
 			message_received = client.recv(1024)
 			message_received = message_received.decode()
@@ -85,58 +93,61 @@ while True:
 			client.send(text.encode())
 			client.send(message.encode())
 
-	while win == False:
-		for client in clients_a_lire:
-			message_received = client.recv(1024)
-			message_received = message_received.decode()
-			order = message_received
+	#while win == False:
+	print("3")
+	for client in clients_a_lire:
+		print("4")
+		message_received = client.recv(1024)
+		message_received = message_received.decode()
+		order = message_received
+	
+		client.send("oui".encode)
+
+		if order.upper() == 'Q':
+			loop = False
+			break
+
+		if robot.number_of_move_box_is_valid(order) == False:
+			continue
 		
+		if len(order[1:]) == 0:
+			number_of_boxes = 1
+		else:
+			number_of_boxes = int(order[1:])
 
-			if order.upper() == 'Q':
-				loop = False
+		i = 0
+
+		letter = str(order[0])
+
+		old_location = robot.get_position()
+
+		while i < number_of_boxes:
+			position = robot.displacement(letter, labyrinth)
+
+			i += 1
+
+			result = labyrinth.positioning_is_validated(position)
+
+			if result == False:
+				robot.set_position(old_location)
+				text = "[status]" + "Impossible d'aller là !"
 				break
 
-			if robot.number_of_move_box_is_valid(order) == False:
-				continue
-			
-			if len(order[1:]) == 0:
-				number_of_boxes = 1
-			else:
-				number_of_boxes = int(order[1:])
+			if result == True:
+				robot.set_position(position)
+				labyrinth.clear_the_robot_in_maze(labyrinth.grille)
+				data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, position)
 
-			i = 0
+			text = "[labyrinth]" + data
 
-			letter = str(order[0])
-
-			old_location = robot.get_position()
-
-			while i < number_of_boxes:
-				position = robot.displacement(letter, labyrinth)
-
-				i += 1
-
-				result = labyrinth.positioning_is_validated(position)
-
-				if result == False:
-					robot.set_position(old_location)
-					text = "[status]" + "Impossible d'aller là !"
-					break
-
-				if result == True:
-					robot.set_position(position)
-					labyrinth.clear_the_robot_in_maze(labyrinth.grille)
-					data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, position)
-
-				text = "[labyrinth]" + data
-
-			if labyrinth.is_win(position):
-				win = True
-				connection_with_client.send("[win] Bravo ! \nVous avez gagné !".encode())
-				# connection_with_client.close()
-				# connection.close()
-				break
-			if win == False:
-				connection_with_client.send(text.encode())
+		if labyrinth.is_win(position):
+			win = True
+			connection_with_client.send("[win] Bravo ! \nVous avez gagné !".encode())
+			# connection_with_client.close()
+			# connection.close()
+			break
+		if win == False:
+			connection_with_client.send(text.encode())
 
 		
 	# ======================================================================
