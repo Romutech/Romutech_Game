@@ -170,7 +170,7 @@ class GraphiqueInterface(Frame):
 
 	def moving_the_robot_north(self):
 		if self.win == False:
-			
+			print("deplacement")
 			self.robot.displacement("n", self.number_of_boxes)
 			# if re.search(r"\[status\]", data):
 			# 	p = re.compile('\[status\]')	
@@ -187,7 +187,7 @@ class GraphiqueInterface(Frame):
 
 	def moving_the_robot_south(self):
 		if self.win == False:
-			
+			print("deplacement")
 			self.robot.displacement("s", self.number_of_boxes)
 			# if re.search(r"\[status\]", data):
 			# 	p = re.compile('\[status\]')	
@@ -204,7 +204,7 @@ class GraphiqueInterface(Frame):
 
 	def moving_the_robot_east(self):
 		if self.win == False:
-			
+			print("deplacement")
 			self.robot.displacement("e", self.number_of_boxes)
 			# if re.search(r"\[status\]", data):
 			# 	p = re.compile('\[status\]')	
@@ -221,7 +221,7 @@ class GraphiqueInterface(Frame):
 
 	def moving_the_robot_west(self):
 		if self.win == False:
-			
+			print("deplacement")
 			self.robot.displacement("w", self.number_of_boxes)
 			# if re.search(r"\[status\]", data):
 			# 	p = re.compile('\[status\]')	

@@ -57,34 +57,49 @@ while True:
 
 	message_received = b""
 
-	clients_a_lire = []
-	try:
-		clients_a_lire, wlist, xlist = select.select(clients_connectes, [], [], 0.05)
+	
+	print("2")
+	
 
-	except select.error:
-		pass
-	else:
-		print("2")
-		
+	while determine_position:
+		starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+		robot = Robot(starting_position_of_the_robot)
+		if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
+			break
+	data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
+	text = "[labyrinth]" + data
 
-		while determine_position:
-			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-			robot = Robot(starting_position_of_the_robot)
-			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
-				break
-		data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
-		text = "[labyrinth]" + data
+	print("3")
+#while win == False:
+	 
+# ======================================================================
+	while True:
+		print("4")
+		starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+		robot = Robot(starting_position_of_the_robot)
+		if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == False:
+			break
 
-	#while win == False:
-		 
-	# ======================================================================
-		while True:
-			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-			robot = Robot(starting_position_of_the_robot)
-			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
-				break
+		print("5")
+		clients_a_lire = []
+		try:
+			clients_a_lire, wlist, xlist = select.select(clients_connectes, [], [], 0.05)
+
+		except select.error:
+			pass
+		else:
+			print("6")
+			for client in clients_a_lire:
+				print("7")
+				message_received = client.recv(1024)
+				message_received = message_received.decode()
+
+				message = "vous avez envoyé " + message_received
+				print(message)
+
 
 			for client in clients_connectes:
+				print("8")
 				client.send(text.encode())
 
 	while win == False and loop :

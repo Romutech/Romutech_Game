@@ -10,6 +10,7 @@ class Network:
 		self.server_connection.connect((self.hote, self.port))
 
 	def sending(self, message):
+		print(message)
 		self.server_connection.send(message.encode())
 		
 

@@ -44,19 +44,22 @@ class Listener(Thread):
 
 # Création des threads
 
-thread_1 = Client(graphique_interface)
 thread_2 = Listener(graphique_interface)
+thread_1 = Client(graphique_interface)
+
 
 # Lancement des threads
-thread_1.start()
 thread_2.start()
+thread_1.start()
+
 
 
 graphique_interface.mainloop()
 
 # Attend que les threads se terminent
-thread_1.join()
 thread_2.join()
+thread_1.join()
+
 
 
 graphique_interface.mainloop()
