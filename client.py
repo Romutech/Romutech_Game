@@ -16,7 +16,7 @@ class Client(Thread):
     def run(self):
         connexion_avec_serveur = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connexion_avec_serveur.connect((hote, port))
-        print("Connexion établie avec le serveur sur le port {}".format(port))
+        print("interface")
         
         msg_a_envoyer = b""
         while msg_a_envoyer != b"fin":
@@ -40,26 +40,32 @@ class Listener(Thread):
         Thread.__init__(self)
 
     def run(self):
-        """Code à exécuter pendant l'exécution du thread."""
-        i = 0
-        while i < 20:
-            sys.stdout.flush()
-            attente = 1.2
-            attente += random.randint(1, 60) / 100
-            time.sleep(attente)
-            i += 1
-            print(attente)
+        connexion_avec_serveur = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        connexion_avec_serveur.connect((hote, port))
+        print("Connexion établie avec le serveur sur le port {}".format(port))
+        
+        while True:
+            time.sleep(5)
+            msg_recu = connexion_avec_serveur.recv(1024)
+            print(msg_recu.decode()) # Là encore, peut planter s'il y a des accents
+        
+        print("Fermeture de la connexion")
+        connexion_avec_serveur.close()
 
 # Création des threads
-thread_1 = Client()
 thread_2 = Listener()
+time.sleep(5)
+thread_1 = Client()
+
 
 # Lancement des threads
-thread_1.start()
 thread_2.start()
+thread_1.start()
+
 
 # Attend que les threads se terminent
-thread_1.join()
 thread_2.join()
+thread_1.join()
+
 
 
