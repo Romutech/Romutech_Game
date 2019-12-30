@@ -9,7 +9,13 @@ class Network:
 		self.server_connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.server_connection.connect((self.hote, self.port))
 
-	def message_exchange_with_server(self, message):
+	def sending(self, message):
 		self.server_connection.send(message.encode())
-		received_message = self.server_connection.recv(1024)
-		return received_message.decode()
+		
+
+	def receive(self):
+		while True:
+			msg_recu = self.server_connection.recv(1024)
+			print(" le message est :")
+			return msg_recu.decode() # Là encore, peut planter s'il y a des accents
+

@@ -157,7 +157,10 @@ class GraphiqueInterface(Frame):
 		marging_middle = Label(frame_game, text="  ")
 		marging_middle.pack(side="left")
 		p = re.compile('\[labyrinth\]')	
-		#self.labyrinthe["text"] = p.sub('', self.network.message_exchange_with_server('connection'))
+		self.labyrinthe["text"] = p.sub('', self.network.receive())
+
+	def show(self):
+		self.labyrinthe["text"] = p.sub('', self.network.receive())
 
 	def quit_application(self):
 		self.robot.displacement("q", self.number_of_boxes)
