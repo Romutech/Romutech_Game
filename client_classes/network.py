@@ -16,6 +16,5 @@ class Network:
 	def receive(self):
 		while True:
 			msg_recu = self.server_connection.recv(1024)
-			print(" le message est :")
 			return msg_recu.decode() # Là encore, peut planter s'il y a des accents
 

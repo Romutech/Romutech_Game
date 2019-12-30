@@ -157,7 +157,7 @@ class GraphiqueInterface(Frame):
 		marging_middle = Label(frame_game, text="  ")
 		marging_middle.pack(side="left")
 		p = re.compile('\[labyrinth\]')	
-		self.labyrinthe["text"] = p.sub('', self.network.receive())
+		#self.labyrinthe["text"] = p.sub('', self.network.receive())
 
 	def show(self):
 		p = re.compile('\[labyrinth\]')	
