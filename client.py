@@ -9,9 +9,14 @@ import time
 hote = "localhost"
 port = 12800
 
+connexion_avec_serveur = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+connexion_avec_serveur.connect((hote, port))
+
+
 class Client(Thread):
-    def __init__(self):
+    def __init__(self, connexion_avec_serveur):
         Thread.__init__(self)
+        self.connexion_avec_serveur = connexion_avec_serveur
 
     def run(self):
         connexion_avec_serveur = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -24,38 +29,33 @@ class Client(Thread):
             # Peut planter si vous tapez des caractères spéciaux
             msg_a_envoyer = msg_a_envoyer.encode()
             # On envoie le message
-            connexion_avec_serveur.send(msg_a_envoyer)
-            msg_recu = connexion_avec_serveur.recv(1024)
-            print(msg_recu.decode()) # Là encore, peut planter s'il y a des accents
-        
-        print("Fermeture de la connexion")
-        connexion_avec_serveur.close()
+            self.connexion_avec_serveur.send(msg_a_envoyer)
+
+
+
 
 
 class Listener(Thread):
 
     """Thread chargé simplement d'afficher une lettre dans la console."""
 
-    def __init__(self):
+    def __init__(self, connexion_avec_serveur):
         Thread.__init__(self)
+        self.connexion_avec_serveur = connexion_avec_serveur
 
     def run(self):
-        connexion_avec_serveur = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        connexion_avec_serveur.connect((hote, port))
+        
         print("Connexion établie avec le serveur sur le port {}".format(port))
         
         while True:
-            time.sleep(5)
-            msg_recu = connexion_avec_serveur.recv(1024)
+            msg_recu = self.connexion_avec_serveur.recv(1024)
+            print(" le message est :")
             print(msg_recu.decode()) # Là encore, peut planter s'il y a des accents
         
-        print("Fermeture de la connexion")
-        connexion_avec_serveur.close()
 
 # Création des threads
-thread_2 = Listener()
-time.sleep(5)
-thread_1 = Client()
+thread_2 = Listener(connexion_avec_serveur)
+thread_1 = Client(connexion_avec_serveur)
 
 
 # Lancement des threads

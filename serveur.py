@@ -11,6 +11,8 @@ print("Le serveur écoute à présent sur le port {}".format(port))
 
 serveur_lance = True
 clients_connectes = []
+
+message = "_"
 while serveur_lance:
     # On va vérifier que de nouveaux clients ne demandent pas à se connecter
     # Pour cela, on écoute la connexion_principale en lecture
@@ -42,10 +44,14 @@ while serveur_lance:
             msg_recu = client.recv(1024)
             # Peut planter si le message contient des caractères spéciaux
             msg_recu = msg_recu.decode()
+
+            message = "vous avez envoyé " + msg_recu
             print("Reçu {}".format(msg_recu))
-            client.send(b"5 / 5")
-            if msg_recu == "fin":
-                serveur_lance = False
+   
+
+        for client in clients_connectes:
+            client.send(message.encode())
+
 
 print("Fermeture des connexions")
 for client in clients_connectes:
