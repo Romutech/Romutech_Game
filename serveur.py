@@ -1,4 +1,5 @@
 ﻿import socket
+import select
 import os
 from server_classes.carte import Carte
 from server_classes.robot import Robot
@@ -26,105 +27,86 @@ win = False
 loop = True
 chosen_card = {}
 
+choose = int(input("\nEntrez un numéro de labyrinthe pour commencer à jouer : "))
+
+chosen_card = cartes[choose-1]
+labyrinth = Labyrinthe(chosen_card.labyrinthe, 'X', 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
+
+
+connexion_principale = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+connexion_principale.bind((hote, port))
+connexion_principale.listen(5)
+print("Le serveur écoute à présent sur le port {}".format(port))
+print("1")
+serveur_lance = True
+clients_connectes = []
+message = "_"
+
 while True:
-	try:
-		choose = int(input("\nEntrez un numéro de labyrinthe pour commencer à jouer : "))
-		if 0 == choose :
-			raise IndexError
-		chosen_card = cartes[choose-1]
-		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'X', 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
-# ====================================================================
-		connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		connection.bind((hote, port))
-		connection.listen(5)
-		connection_with_client, infos_connexion = connection.accept()
-		message_received = b""
+	
+	while loop == True:
+		connexions_demandees, wlist, xlist = select.select([connexion_principale], [], [], 0.05)
+		choice = input("on continue ? ")
+		if choice == "non":
+			loop = False
 
-		while determine_position:
-			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-			robot = Robot(starting_position_of_the_robot)
-			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
-				break
-		data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
-		text = "[labyrinth]" + data
-		
 
-		message_received = connection_with_client.recv(1024)
-		message_received = message_received.decode()
-		connection_with_client.send(text.encode())
+	for connexion in connexions_demandees:
+		connexion_avec_client, infos_connexion = connexion.accept()
+		clients_connectes.append(connexion_avec_client)
 
-		while win == False:
-			message_received = connection_with_client.recv(1024)
-			message_received = message_received.decode()
-			
-			i = 0
+	message_received = b""
 
-			
+	
+	print("2")
+	
 
-			order = message_received
+	while determine_position:
+		starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+		robot = Robot(starting_position_of_the_robot)
+		if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
+			break
+	data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
+	text = "[labyrinth]" + data
 
-			if order.upper() == 'Q':
-				loop = False
-				break
-
-			if robot.the_direction_is_valid(order) == False or robot.number_of_move_box_is_valid(order) == False:
-				continue
-			
-			if len(order[1:]) == 0:
-				number_of_boxes = 1
-			else:
-				number_of_boxes = int(order[1:])
-
-			i = 0
-
-			letter = str(order[0])
-
-			old_location = robot.get_position()
-
-			while i < number_of_boxes:
-				position = robot.displacement(letter, labyrinth)
-
-				i += 1
-
-				result = labyrinth.positioning_is_validated(position)
-
-				if result == False:
-					robot.set_position(old_location)
-					text = "[status]" + "Impossible d'aller là !"
-					break
-
-				if result == True:
-					robot.set_position(position)
-					labyrinth.clear_the_robot_in_maze(labyrinth.grille)
-					data = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, position)
-
-				text = "[labyrinth]" + data
-
-			if labyrinth.is_win(position):
-				win = True
-				connection_with_client.send("[win] Bravo ! \nVous avez gagné !".encode())
-				# connection_with_client.close()
-				# connection.close()
-				break
-			if win == False:
-				connection_with_client.send(text.encode())
-
-		print("Fermeture de la connexion")
-		connection_with_client.close()
-		connection.close()
+	print("3")
+#while win == False:
+	 
 # ======================================================================
-		while True:
-			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-			robot = Robot(starting_position_of_the_robot)
-			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
-				break
-		
-	except ValueError as e:
-		print("Veuillez saisir un nombre")
-	except IndexError as e:
-		print("Veuillez saisir une carte qui existante")
-	else:
-		break
-while win == False and loop :
-	i = 0
+	while True:
+		print("4")
+		starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+		robot = Robot(starting_position_of_the_robot)
+		if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == False:
+			break
 
+		print("5")
+		clients_a_lire = []
+		try:
+			clients_a_lire, wlist, xlist = select.select(clients_connectes, [], [], 0.05)
+
+		except select.error:
+			pass
+		else:
+			print("6")
+			for client in clients_a_lire:
+				print("7")
+				message_received = client.recv(1024)
+				message_received = message_received.decode()
+
+				message = "vous avez envoyé " + message_received
+				print(message)
+
+
+			for client in clients_connectes:
+				print("8")
+				client.send(text.encode())
+
+	while win == False and loop :
+		i = 0
+
+print("Fermeture des connexions")
+for client in clients_connectes:
+	client.close()
+
+connexion_principale.close()
