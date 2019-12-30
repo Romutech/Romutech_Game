@@ -160,6 +160,7 @@ class GraphiqueInterface(Frame):
 		self.labyrinthe["text"] = p.sub('', self.network.receive())
 
 	def show(self):
+		p = re.compile('\[labyrinth\]')	
 		self.labyrinthe["text"] = p.sub('', self.network.receive())
 
 	def quit_application(self):

@@ -38,9 +38,7 @@ class Listener(Thread):
 
 	def run(self):
 		print("ok")
-		#self.graphique_interface.show()
-		#self.graphique_interface.mainloop()
-
+		self.graphique_interface.show()
 
 
 
