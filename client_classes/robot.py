@@ -8,4 +8,4 @@ class Robot:
 		# self.y = position[1]
 
 	def displacement(self, direction, number_of_boxes):
-		return self.network.sending(direction+number_of_boxes.get())
+		self.network.sending(direction+number_of_boxes.get())

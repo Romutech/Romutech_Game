@@ -170,7 +170,7 @@ class GraphiqueInterface(Frame):
 	def moving_the_robot_north(self):
 		if self.win == False:
 			
-		self.robot.displacement("n", self.number_of_boxes)
+			self.robot.displacement("n", self.number_of_boxes)
 			# if re.search(r"\[status\]", data):
 			# 	p = re.compile('\[status\]')	
 			# 	self.message_status['text'] = p.sub('', data)
