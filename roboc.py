@@ -11,7 +11,6 @@ import os
 from carte import Carte
 from labyrinthe import Labyrinthe
 from class_robot.robot import Robot
-from backup.backup_file import BackupFile
 
 # On charge les cartes existantes
 cartes = []
@@ -35,52 +34,31 @@ number_of_cards = i + 1
 
 win = False
 loop = True
-backup_file = BackupFile('backup')
 response = 'OUI'
 chosen_card = {}
 
-if backup_file.backup_exists():
-	while True:
-		response = str(input("\nVoulez vous continuer la partie existante ? oui/non : "))
-		if 'OUI' == response.upper() :
+while True:
+	try:
+		choose = int(input("\nEntrez un numéro de labyrinthe pour commencer à jouer : "))
 
-			data = backup_file.get_saved_data()
-			lab = backup_file.loading_map(data['maze_name'])
-			chosen_card = Carte(data['maze_name'], lab)
-			labyrinth = Labyrinthe(chosen_card.labyrinthe, 'X', 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
-			robot = Robot(data['robot_position'])
-			labyrinth.clear_the_robot_in_maze(labyrinth.grille)
+		if 0 == choose :
+			raise IndexError
 			
-			break
-		elif 'NON' == response.upper():
-			backup_file.reset()
-			break
-		else : 
-			print('Veuillez choisir entre "oui" ou "non"')
-
-if backup_file.backup_exists() == False:
-	while True:
-		try:
-			choose = int(input("\nEntrez un numéro de labyrinthe pour commencer à jouer : "))
-
-			if 0 == choose :
-				raise IndexError
-				
-			chosen_card = cartes[choose-1]
-			labyrinth = Labyrinthe(chosen_card.labyrinthe, 'X', 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
-			
-			while True:
-				starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-				robot = Robot(starting_position_of_the_robot)
-				if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
-					break
-			
-		except ValueError as e:
-			print("Veuillez saisir un nombre")
-		except IndexError as e:
-			print("Veuillez saisir une carte qui existante")
-		else:
-			break
+		chosen_card = cartes[choose-1]
+		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'X', 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
+		
+		while True:
+			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+			robot = Robot(starting_position_of_the_robot)
+			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
+				break
+		
+	except ValueError as e:
+		print("Veuillez saisir un nombre")
+	except IndexError as e:
+		print("Veuillez saisir une carte qui existante")
+	else:
+		break
 
 labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
 
@@ -122,6 +100,5 @@ while win == False and loop :
 			print("O\n")
 			break
 
-		backup_file.set_data_to_save(robot.get_position(), chosen_card.nom, chosen_card.height, chosen_card.width)
 		i += 1
 	
