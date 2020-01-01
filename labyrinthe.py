@@ -33,22 +33,22 @@ class Labyrinthe:
         the labyrinth width in the form of an int,
         the height in the form of an int,
         and the position of the robot in the form of a tuple"""
-        lab = ""
+
         i = 0 # abscissa
         j = 0 # ordinate
+        print()
         
         while j < grid_height: 
             while i < grid_width:
                 if j == robot_location[0] and i == robot_location[1]:
-                    lab += 'X' 
+                    print('X',  sep='', end='')
                 else:
-                    lab += grid_map[j, i]
+                    print(grid_map[j, i], sep='', end='')
                 i += 1
-            lab += "\n"
+            print()
             i = 0
             j += 1
-
-        return lab
+        print()
 
 
     def determine_starting_position_from_map(self, labyrinth):
@@ -62,6 +62,7 @@ class Labyrinthe:
                 return value[0], value[1]
 
         # if the robot was not found on the map, this position is determined randomly
+        print ("définition aléatoire de la position du robot")
         return (randrange(0, self.width), randrange(0, self.height))
 
 

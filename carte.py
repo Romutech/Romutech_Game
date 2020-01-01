@@ -1,4 +1,4 @@
-﻿# -*-coding:Utf-8 -*
+# -*-coding:Utf-8 -*
 
 """Ce module contient la classe Carte."""
 
@@ -13,17 +13,11 @@ class Carte:
         and a string representing the labyrinth."""
 
         self.nom = nom
-        self.string = chaine
-
-
         if isinstance(chaine, str):
             self.labyrinthe = self.creer_labyrinthe_depuis_chaine(chaine)
 
     def __repr__(self):
         return "<Carte {}>".format(self.nom)
-
-    def get_labyrinth_in_string(self):
-        return self.string
 
 
     def creer_labyrinthe_depuis_chaine(self, chaine):
