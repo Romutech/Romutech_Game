@@ -63,6 +63,7 @@ class listener(Thread):
 
         # -------------------------------------------- ECOUTE CLIENT ---------------------------------------------------
 
+        print("client ecoute ")
         msg_recu = self.connexion_avec_serveur.recv(1024)
         print(msg_recu.decode()) # Là encore, peut planter s'il y a des accents
 

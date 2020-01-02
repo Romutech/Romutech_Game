@@ -37,6 +37,9 @@ while serveur_lance:
         pass
     else:
         # On parcourt la liste des clients à lire
+        
+
+        # -------------- MODIFIE -----------------
         for client in clients_a_lire:
             # Client est de type socket
             msg_recu = client.recv(1024)
@@ -46,6 +49,18 @@ while serveur_lance:
             client.send(b"5 / 5")
             if msg_recu == "fin":
                 serveur_lance = False
+
+
+        # -------------- ORIGINAL -----------------
+        # for client in clients_a_lire:
+        #     # Client est de type socket
+        #     msg_recu = client.recv(1024)
+        #     # Peut planter si le message contient des caractères spéciaux
+        #     msg_recu = msg_recu.decode()
+        #     print("Reçu {}".format(msg_recu))
+        #     client.send(b"5 / 5")
+        #     if msg_recu == "fin":
+        #         serveur_lance = False
 
 print("Fermeture des connexions")
 for client in clients_connectes:
