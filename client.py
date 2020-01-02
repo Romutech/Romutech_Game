@@ -48,9 +48,6 @@ class main(Thread):
             # On envoie le message
             self.connexion_avec_serveur.send(msg_a_envoyer)
         
-        print("Fermeture de la connexion")
-        connexion_avec_serveur.close()
-        
         # ----------------------------------------------- FIN CLIENT ---------------------------------------------------
                     
 class listener(Thread):
@@ -60,12 +57,16 @@ class listener(Thread):
 
     def run(self):
         """Code à exécuter pendant l'exécution du thread."""
-
+        loop = True
         # -------------------------------------------- ECOUTE CLIENT ---------------------------------------------------
+        while loop:
+            print("client ecoute ")
+            msg_recu = self.connexion_avec_serveur.recv(1024)
+            print(msg_recu.decode()) # Là encore, peut planter s'il y a des accents
 
-        print("client ecoute ")
-        msg_recu = self.connexion_avec_serveur.recv(1024)
-        print(msg_recu.decode()) # Là encore, peut planter s'il y a des accents
+            if msg_recu.decode() == "fin":
+                print("Fermeture de la connexion")
+                connexion_avec_serveur.close()
 
         # ------------------------------------------- FIN ECOUTE CLIENT ------------------------------------------------
 
@@ -115,6 +116,7 @@ class listener(Thread):
 
         # ------------------------------------------------ FIN SERVEUR -------------------------------------------------
 
+
 # Création des threads
 thread_1 = main(connexion_avec_serveur)
 thread_2 = listener(connexion_avec_serveur)
@@ -126,3 +128,6 @@ thread_2.start()
 # Attend que les threads se terminent
 thread_1.join()
 thread_2.join()
+
+print("Fermeture de la connexion")
+connexion_avec_serveur.close()

@@ -1,6 +1,8 @@
 import socket
 import select
 
+import time
+
 hote = ''
 port = 12800
 
@@ -37,7 +39,7 @@ while serveur_lance:
         pass
     else:
         # On parcourt la liste des clients à lire
-        
+        msg_recu = ""
 
         # -------------- MODIFIE -----------------
         for client in clients_a_lire:
@@ -46,9 +48,19 @@ while serveur_lance:
             # Peut planter si le message contient des caractères spéciaux
             msg_recu = msg_recu.decode()
             print("Reçu {}".format(msg_recu))
-            client.send(b"5 / 5")
+
+            for c in clients_connectes:
+                if len(msg_recu) > 0:
+                    c.send(msg_recu.encode())
+
+        if len(msg_recu) > 0:
             if msg_recu == "fin":
                 serveur_lance = False
+
+        
+    
+        
+        # ------------ FIN MODIFIE ----------------
 
 
         # -------------- ORIGINAL -----------------
@@ -63,7 +75,9 @@ while serveur_lance:
         #         serveur_lance = False
 
 print("Fermeture des connexions")
+time.sleep(2.5)
 for client in clients_connectes:
+    time.sleep(1.0)
     client.close()
 
 connexion_principale.close()
