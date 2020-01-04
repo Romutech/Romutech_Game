@@ -22,7 +22,6 @@ class main(Thread):
        
     def run(self):
         """Code à exécuter pendant l'exécution du thread."""
-        print('pouah')
         msg_a_envoyer = b""
         while msg_a_envoyer != b"fin" and self.program_execution:
 
@@ -47,22 +46,15 @@ class listener(Thread):
 
     def run(self):
         """Code à exécuter pendant l'exécution du thread."""
-        loop = True
 
-        while loop and self.program_execution:
-            print("client ecoute ")
+        while self.program_execution:
             msg_recu = self.connexion_avec_serveur.recv(1024)
 
-            print(len(msg_recu))
             if len(msg_recu) == 0:
-                print("oui")
                 self.program_execution = False
                 status = self.thread.stop_program_execution()
-                print(status)
                 break
-            print('ah')
             print(msg_recu.decode()) # Là encore, peut planter s'il y a des accents
-            print('bouh')
             if msg_recu.decode() == "fin":
                 print("Fermeture de la connexion")
                 connexion_avec_serveur.close()
