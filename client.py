@@ -24,7 +24,7 @@ class main(Thread):
         
         msg_a_envoyer = b""
         while msg_a_envoyer != b"fin":
-            msg_a_envoyer = input("> ")
+            msg_a_envoyer = str(input("Saisissez une lettre pour déplacer le robot 'n' 's' 'e' 'o' ou saisissez 'q' pour quitter le jeu: "))
             # Peut planter si vous tapez des caractères spéciaux
             msg_a_envoyer = msg_a_envoyer.encode()
             # On envoie le message
@@ -40,6 +40,7 @@ class listener(Thread):
         """Code à exécuter pendant l'exécution du thread."""
         loop = True
         while loop:
+            time.sleep(1.00)
             print("client ecoute ")
             msg_recu = self.connexion_avec_serveur.recv(1024)
             print(msg_recu.decode()) # Là encore, peut planter s'il y a des accents

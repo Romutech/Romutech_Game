@@ -50,6 +50,23 @@ class Labyrinthe:
             j += 1
         print()
 
+        i = 0 # abscissa
+        j = 0 # ordinate
+        lab = "\n"
+        while j < grid_height: 
+            while i < grid_width:
+                if j == robot_location[0] and i == robot_location[1]:
+                    lab += 'X'
+                else:
+                    lab += grid_map[j, i]
+                i += 1
+            lab += "\n"
+            i = 0
+            j += 1
+        lab += "\n"
+
+        return lab
+
 
     def determine_starting_position_from_map(self, labyrinth):
 
