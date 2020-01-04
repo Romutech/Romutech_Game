@@ -169,7 +169,7 @@ print("Fermeture des connexions")
 for client in clients_connectes:
 	client.close()
 
-connexion_principale.close()
+#connexion_principale.close()
 
 # ------------------------------------ FIN PARTIE SERVEUR --------------------------------------------------------------
 
