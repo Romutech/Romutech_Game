@@ -7,7 +7,7 @@ class Labyrinthe:
 
     """Classe représentant un labyrinthe."""
 
-    def __init__(self, labyrinthe, robot, obstacles, doors, exit, name_map, width, height):
+    def __init__(self, labyrinthe, obstacles, doors, exit, name_map, width, height):
 
         """Initializes the representation of a labyrinth.
         Receives in parameter:
@@ -17,7 +17,7 @@ class Labyrinthe:
         - the graphic representation of the doors
         - the graphic representation of the labyrinth's exit"""
 
-        self.robot = robot
+        self.robots = ['X', 'x']
         self.grille = labyrinthe
         self.obstacles = obstacles
         self.doors = doors
@@ -37,8 +37,8 @@ class Labyrinthe:
         i = 0 # abscissa
         j = 0 # ordinate
         print()
-        
-        while j < grid_height: 
+
+        while j < grid_height:
             while i < grid_width:
                 if j == robot_location[0] and i == robot_location[1]:
                     print('X',  sep='', end='')
@@ -53,7 +53,7 @@ class Labyrinthe:
         i = 0 # abscissa
         j = 0 # ordinate
         lab = "\n"
-        while j < grid_height: 
+        while j < grid_height:
             while i < grid_width:
                 if j == robot_location[0] and i == robot_location[1]:
                     lab += 'X'

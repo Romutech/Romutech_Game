@@ -79,6 +79,8 @@ msg_recu = ""
 while win == False and loop and serveur_lance:
 
 # ------------------------------------ PARTIE SERVEUR ------------------------------------------------------------------
+
+################################### FIRST ######################################
 	if first:
 		first = False
 		input('Appuyez sur une touche pour lancer la partie')
@@ -101,6 +103,8 @@ while win == False and loop and serveur_lance:
 			robot = Robot(starting_position_of_the_robot)
 			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
 				break
+
+################################ FIN FIRST #####################################
 
 	clients_a_lire = []
 
