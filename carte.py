@@ -9,7 +9,7 @@ class Carte:
     def __init__(self, nom, chaine):
 
         """Initializes the representation of a map.
-        Receives as parameter the name of a map in the form of a string of characters 
+        Receives as parameter the name of a map in the form of a string of characters
         and a string representing the labyrinth."""
 
         self.nom = nom
@@ -21,7 +21,7 @@ class Carte:
 
 
     def creer_labyrinthe_depuis_chaine(self, chaine):
-        
+
         """This function makes a maze from a string of characters and takes a string of characters.`
         She is returning a dictionary"""
 
@@ -42,7 +42,7 @@ class Carte:
         return grille
 
     def convert_labyrinth_from_dictionary_to_string(self, dictionnary, grid_height, grid_width):
-        
+
         """converts dictionary-type labyrinth into a character string"""
 
         i = 0 # abscissa
@@ -50,17 +50,16 @@ class Carte:
 
         string_map = ""
 
-        while j < grid_width: 
+        while j < grid_width:
 
             while i < grid_height:
                 string_map += dictionnary[j, i]
                 i += 1
 
             string_map += "\n"
-      
+
             i = 0
             j += 1
 
         self.labyrinthe = self.creer_labyrinthe_depuis_chaine(string_map)
 
-    
