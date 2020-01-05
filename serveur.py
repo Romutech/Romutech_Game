@@ -114,17 +114,8 @@ while win == False and loop and serveur_lance:
 				num += 1
 
 ################################ FIN FIRST #####################################
-	print('oui')
+
 	clients_a_lire = []
-
-	if first:
-		first = False
-		message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
-
-		for c in clients_connectes:
-			if len(msg_recu) > 0:
-				c.send(message.encode())
-
 
 	try:
 		clients_a_lire, wlist, xlist = select.select(clients_connectes, [], [], 0.05)
