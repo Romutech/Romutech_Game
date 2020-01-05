@@ -96,8 +96,6 @@ while win == False and loop and serveur_lance:
 				clients_connectes.append(connexion_avec_client)
 			i += 1
 
-
-		print(clients_connectes)
 		while num < len(clients_connectes):
 			robot.append('x')
 			num += 1
@@ -108,14 +106,13 @@ while win == False and loop and serveur_lance:
 		while num < len(clients_connectes):
 			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
 
-			robot[num] = Robot(starting_position_of_the_robot, robot_representations[num])
+			robot[num] = Robot(starting_position_of_the_robot, robot_representations[num], clients_connectes[num].getpeername()[1])
 
 			if labyrinth.positioning_is_validated((robot[num].ordinate, robot[num].abscissa)) == True:
 				num += 1
 
 ################################ FIN FIRST #####################################
 
-	print(robot)
 	clients_a_lire = []
 
 	try:
@@ -137,8 +134,6 @@ while win == False and loop and serveur_lance:
 				print('Fin du jeu ! Au revoir !')
 				loop = False
 				break
-
-			
 
 			if robot[0].the_direction_is_valid(order) == False or robot[0].number_of_move_box_is_valid(order) == False:
 				continue

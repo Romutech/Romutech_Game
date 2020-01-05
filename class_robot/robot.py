@@ -6,7 +6,7 @@ class Robot:
 
     """Class representing a robot."""
 
-    def __init__(self, starting_position_of_the_robot, representation):
+    def __init__(self, starting_position_of_the_robot, representation, identifiant):
 
         """initializes the representation of a robot.
         Receives in parameter a tuple representing the starting position."""
@@ -15,10 +15,11 @@ class Robot:
         self.abscissa = starting_position_of_the_robot[1]
         self.cardinal_points = {"North": 'N', "South": 'S', "East": 'E',"West": 'O'}
         self.representation = representation
+        self.identifiant = identifiant
 
 
     def __repr__(self):
-        return "le robot se trouve à l'abcissse " + str(self.abscissa) + " et à l'ordonné " + str(self.ordinate) + " et est representé par " + str(self.representation)
+        return "identifiant : " + str(self.identifiant) + " abcissse :" + str(self.abscissa) + " ordonné :" + str(self.ordinate) + "representé par " + str(self.representation)
     
 
     def __getitem__(self, position):
