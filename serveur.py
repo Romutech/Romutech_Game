@@ -71,6 +71,7 @@ print("Le serveur écoute à présent sur le port {}".format(port))
 serveur_lance = True
 clients_connectes = []
 robot = []
+robot_representations = ['X', 'x', 'Y', 'y', 'Z']
 i = 0
 num = 0
 
@@ -106,15 +107,15 @@ while win == False and loop and serveur_lance:
 		num = 0
 		while num < len(clients_connectes):
 			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-			print('1')
 
-			robot[num] = Robot(starting_position_of_the_robot)
+			robot[num] = Robot(starting_position_of_the_robot, robot_representations[num])
 
 			if labyrinth.positioning_is_validated((robot[num].ordinate, robot[num].abscissa)) == True:
 				num += 1
 
 ################################ FIN FIRST #####################################
 
+	print(robot)
 	clients_a_lire = []
 
 	try:
@@ -136,6 +137,8 @@ while win == False and loop and serveur_lance:
 				print('Fin du jeu ! Au revoir !')
 				loop = False
 				break
+
+			
 
 			if robot[0].the_direction_is_valid(order) == False or robot[0].number_of_move_box_is_valid(order) == False:
 				continue
