@@ -17,7 +17,7 @@ class Labyrinthe:
         - the graphic representation of the doors
         - the graphic representation of the labyrinth's exit"""
 
-        self.robots = ['X', 'x']
+        self.robot = 'X'
         self.grille = labyrinthe
         self.obstacles = obstacles
         self.doors = doors
@@ -38,7 +38,7 @@ class Labyrinthe:
         j = 0 # ordinate
         print()
 
-        while j < grid_height:
+        while j < grid_height -1:
             while i < grid_width:
                 if j == robot_location[0] and i == robot_location[1]:
                     print('X',  sep='', end='')
@@ -53,7 +53,7 @@ class Labyrinthe:
         i = 0 # abscissa
         j = 0 # ordinate
         lab = "\n"
-        while j < grid_height:
+        while j < grid_height -1:
             while i < grid_width:
                 if j == robot_location[0] and i == robot_location[1]:
                     lab += 'X'

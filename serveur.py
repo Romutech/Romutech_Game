@@ -70,7 +70,9 @@ print("Le serveur écoute à présent sur le port {}".format(port))
 
 serveur_lance = True
 clients_connectes = []
+robot = []
 i = 0
+num = 0
 
 # ------------------------------------ FIN PARTIE SERVEUR --------------------------------------------------------------
 
@@ -95,17 +97,24 @@ while win == False and loop and serveur_lance:
 
 
 		print(clients_connectes)
+		while num < len(clients_connectes):
+			robot.append('x')
+			num += 1
 
-		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'X', 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
 
-		while True:
+		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
+		num = 0
+		while num < len(clients_connectes):
 			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-			robot = Robot(starting_position_of_the_robot)
-			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
-				break
+			print('1')
+
+			robot[num] = Robot(starting_position_of_the_robot)
+
+			if labyrinth.positioning_is_validated((robot[num].ordinate, robot[num].abscissa)) == True:
+				num += 1
 
 ################################ FIN FIRST #####################################
-
+	print('oui')
 	clients_a_lire = []
 
 	if first:
@@ -137,7 +146,7 @@ while win == False and loop and serveur_lance:
 				loop = False
 				break
 
-			if robot.the_direction_is_valid(order) == False or robot.number_of_move_box_is_valid(order) == False:
+			if robot[0].the_direction_is_valid(order) == False or robot[0].number_of_move_box_is_valid(order) == False:
 				continue
 
 			if len(order[1:]) == 0:
@@ -146,15 +155,15 @@ while win == False and loop and serveur_lance:
 				number_of_boxes = int(order[1:])
 
 			while i < number_of_boxes:
-				position = robot.displacement(order)
+				position = robot[0].displacement(order)
 
 				if labyrinth.positioning_is_validated(position) == False:
 					client.send("vous ne pouvez pas aller à cet endroit car un obstacle vous en empeche ! ".encode())
 					break
 
-				robot.set_position(position)
+				robot[0].set_position(position)
 				labyrinth.clear_the_robot_in_maze(labyrinth.grille)
-				message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
+				message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot[0].get_position())
 
 				if labyrinth.is_win(position):
 					win = True
