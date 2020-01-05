@@ -43,6 +43,7 @@ loop = True
 first = True
 response = 'OUI'
 chosen_card = {}
+first = True
 
 while True:
 	try:
@@ -52,14 +53,6 @@ while True:
 			raise IndexError
 
 		chosen_card = cartes[choose-1]
-		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'X', 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
-
-		while True:
-			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-			robot = Robot(starting_position_of_the_robot)
-			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
-				break
-
 	except ValueError as e:
 		print("Veuillez saisir un nombre")
 	except IndexError as e:
@@ -82,22 +75,32 @@ i = 0
 # ------------------------------------ FIN PARTIE SERVEUR --------------------------------------------------------------
 
 msg_recu = ""
+
 while win == False and loop and serveur_lance:
 
 # ------------------------------------ PARTIE SERVEUR ------------------------------------------------------------------
+	if first:
+		first = False
+		input('Appuyez sur une touche pour lancer la partie')
 
-	input('Appuyez sur une touche pour lancer la partie')
+		while i < 6:
+			connexions_demandees, wlist, xlist = select.select([connexion_principale], [], [], 0.05)
 
-	while i < 6:
-		connexions_demandees, wlist, xlist = select.select([connexion_principale], [], [], 0.05)
-
-		for connexion in connexions_demandees:
-			connexion_avec_client, infos_connexion = connexion.accept()
-			clients_connectes.append(connexion_avec_client)
-		i += 1
+			for connexion in connexions_demandees:
+				connexion_avec_client, infos_connexion = connexion.accept()
+				clients_connectes.append(connexion_avec_client)
+			i += 1
 
 
-	print(clients_connectes)
+		print(clients_connectes)
+
+		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'X', 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
+
+		while True:
+			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+			robot = Robot(starting_position_of_the_robot)
+			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
+				break
 
 	clients_a_lire = []
 
