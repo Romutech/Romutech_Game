@@ -36,7 +36,7 @@ for i, carte in enumerate(cartes):
 
 number_of_cards = i + 1
 
-#continuation of the program 
+#continuation of the program
 
 win = False
 loop = True
@@ -50,16 +50,16 @@ while True:
 
 		if 0 == choose :
 			raise IndexError
-			
+
 		chosen_card = cartes[choose-1]
 		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'X', 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
-		
+
 		while True:
 			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
 			robot = Robot(starting_position_of_the_robot)
 			if labyrinth.positioning_is_validated((robot.ordinate, robot.abscissa)) == True:
 				break
-		
+
 	except ValueError as e:
 		print("Veuillez saisir un nombre")
 	except IndexError as e:
@@ -77,24 +77,33 @@ print("Le serveur écoute à présent sur le port {}".format(port))
 
 serveur_lance = True
 clients_connectes = []
+i = 0
 
 # ------------------------------------ FIN PARTIE SERVEUR --------------------------------------------------------------
 
-
+msg_recu = ""
 while win == False and loop and serveur_lance:
 
 # ------------------------------------ PARTIE SERVEUR ------------------------------------------------------------------
-	connexions_demandees, wlist, xlist = select.select([connexion_principale], [], [], 0.05)
-	
-	for connexion in connexions_demandees:
-		connexion_avec_client, infos_connexion = connexion.accept()
-		clients_connectes.append(connexion_avec_client)
-	
+
+	input('Appuyez sur une touche pour lancer la partie')
+
+	while i < 6:
+		connexions_demandees, wlist, xlist = select.select([connexion_principale], [], [], 0.05)
+
+		for connexion in connexions_demandees:
+			connexion_avec_client, infos_connexion = connexion.accept()
+			clients_connectes.append(connexion_avec_client)
+		i += 1
+
+
+	print(clients_connectes)
+
 	clients_a_lire = []
 
 	if first:
 		first = False
-		message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position()) 
+		message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot.get_position())
 
 		for c in clients_connectes:
 			if len(msg_recu) > 0:
@@ -115,7 +124,7 @@ while win == False and loop and serveur_lance:
 
 			order = msg_recu
 			i = 0
-			 
+
 			if order.upper() == 'Q':
 				print('Fin du jeu ! Au revoir !')
 				loop = False
@@ -149,14 +158,14 @@ while win == False and loop and serveur_lance:
 						c.send(message.encode())
 
 				i += 1
-			
+
 
 		if len(msg_recu) > 0:
 			if msg_recu == "fin":
 				serveur_lance = False
 # ------------------------------------ FIN PARTIE SERVEUR --------------------------------------------------------------
 
-		
+
 
 # toto deplacer dans client => str(input("Saisissez une lettre pour déplacer le robot 'n' 's' 'e' 'o' ou saisissez 'q' pour quitter le jeu: "))
 
@@ -172,4 +181,3 @@ connexion_principale.close()
 # ------------------------------------ FIN PARTIE SERVEUR --------------------------------------------------------------
 
 
-	
