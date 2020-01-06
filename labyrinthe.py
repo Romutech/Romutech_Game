@@ -26,7 +26,7 @@ class Labyrinthe:
         self.width = width
         self.height = height
 
-    def show(self, grid_map, grid_height, grid_width, robot_location):
+    def show(self, grid_map, grid_height, grid_width, robots):
 
         """This function displays the labyrinth
         It takes in parameters a dictionary representing the labyrinth,
@@ -34,31 +34,21 @@ class Labyrinthe:
         the height in the form of an int,
         and the position of the robot in the form of a tuple"""
 
-        i = 0 # abscissa
-        j = 0 # ordinate
-        print()
-
-        while j < grid_height -1:
-            while i < grid_width:
-                if j == robot_location[0] and i == robot_location[1]:
-                    print('X',  sep='', end='')
-                else:
-                    print(grid_map[j, i], sep='', end='')
-                i += 1
-            print()
-            i = 0
-            j += 1
-        print()
+        robot_present = False
 
         i = 0 # abscissa
         j = 0 # ordinate
         lab = "\n"
         while j < grid_height -1:
             while i < grid_width:
-                if j == robot_location[0] and i == robot_location[1]:
-                    lab += 'X'
-                else:
+                for robot in robots:
+                    if j == robots[robot]['ordinate'] and i == robots[robot]['abscissa']:
+                        lab += robots[robot]['representation']
+                        robot_present = True
+                
+                if robot_present == False:
                     lab += grid_map[j, i]
+                robot_present = False
                 i += 1
             lab += "\n"
             i = 0
