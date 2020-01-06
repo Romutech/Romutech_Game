@@ -70,7 +70,7 @@ print("Le serveur écoute à présent sur le port {}".format(port))
 
 serveur_lance = True
 clients_connectes = []
-robot = []
+robot = {}
 robot_representations = ['X', 'x', 'Y', 'y', 'Z']
 i = 0
 num = 0
@@ -96,22 +96,19 @@ while win == False and loop and serveur_lance:
 				clients_connectes.append(connexion_avec_client)
 			i += 1
 
-		while num < len(clients_connectes):
-			robot.append('x')
-			num += 1
-
-
 		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
 		num = 0
-		while num < len(clients_connectes):
+
+		for client_connecte in clients_connectes:
 			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+			robot[client_connecte.getpeername()[1]] = Robot(starting_position_of_the_robot, robot_representations[num], client_connecte.getpeername()[1])
 
-			robot[num] = Robot(starting_position_of_the_robot, robot_representations[num], clients_connectes[num].getpeername()[1])
-
-			if labyrinth.positioning_is_validated((robot[num].ordinate, robot[num].abscissa)) == True:
+			if labyrinth.positioning_is_validated((robot[client_connecte.getpeername()[1]].ordinate, robot[client_connecte.getpeername()[1]].abscissa)) == True:
 				num += 1
 
 ################################ FIN FIRST #####################################
+
+	print(robot)
 
 	clients_a_lire = []
 
@@ -135,7 +132,7 @@ while win == False and loop and serveur_lance:
 				loop = False
 				break
 
-			if robot[0].the_direction_is_valid(order) == False or robot[0].number_of_move_box_is_valid(order) == False:
+			if robot[client.getpeername()[1]].the_direction_is_valid(order) == False or robot[client.getpeername()[1]].number_of_move_box_is_valid(order) == False:
 				continue
 
 			if len(order[1:]) == 0:
@@ -144,15 +141,15 @@ while win == False and loop and serveur_lance:
 				number_of_boxes = int(order[1:])
 
 			while i < number_of_boxes:
-				position = robot[0].displacement(order)
+				position = robot[client.getpeername()[1]].displacement(order)
 
 				if labyrinth.positioning_is_validated(position) == False:
 					client.send("vous ne pouvez pas aller à cet endroit car un obstacle vous en empeche ! ".encode())
 					break
 
-				robot[0].set_position(position)
+				robot[client.getpeername()[1]].set_position(position)
 				labyrinth.clear_the_robot_in_maze(labyrinth.grille)
-				message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot[0].get_position())
+				message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot[client.getpeername()[1]].get_position())
 
 				if labyrinth.is_win(position):
 					win = True

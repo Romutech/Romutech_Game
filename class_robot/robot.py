@@ -19,7 +19,7 @@ class Robot:
 
 
     def __repr__(self):
-        return "identifiant : " + str(self.identifiant) + " abcissse :" + str(self.abscissa) + " ordonné :" + str(self.ordinate) + "representé par " + str(self.representation)
+        return "identifiant : " + str(self.identifiant) + " abcissse : " + str(self.abscissa) + " ordonné : " + str(self.ordinate) + " representé par : " + str(self.representation)
     
 
     def __getitem__(self, position):
