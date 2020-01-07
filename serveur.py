@@ -79,6 +79,36 @@ num = 0
 
 msg_recu = ""
 
+input('Appuyez sur une touche pour lancer la partie')
+
+while i < 6:
+	connexions_demandees, wlist, xlist = select.select([connexion_principale], [], [], 0.05)
+
+	for connexion in connexions_demandees:
+		connexion_avec_client, infos_connexion = connexion.accept()
+		clients_connectes.append(connexion_avec_client)
+	i += 1
+
+labyrinth = Labyrinthe(chosen_card.labyrinthe, 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
+num = 0
+
+print('ici')
+print(chosen_card.labyrinthe[(0,0)])
+while num < len(clients_connectes):
+	starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+
+	bot = Robot(starting_position_of_the_robot, robot_representations[num], clients_connectes[num].getpeername()[1])
+	robot[clients_connectes[num].getpeername()[1]] = {}
+	robot[clients_connectes[num].getpeername()[1]]['object'] = bot
+	robot[clients_connectes[num].getpeername()[1]]['identifiant'] = bot.identifiant
+	robot[clients_connectes[num].getpeername()[1]]['representation'] = bot.representation
+	robot[clients_connectes[num].getpeername()[1]]['ordinate'] = bot.ordinate
+	robot[clients_connectes[num].getpeername()[1]]['abscissa'] = bot.abscissa
+
+	if labyrinth.positioning_is_validated((robot[clients_connectes[num].getpeername()[1]]['ordinate'], robot[clients_connectes[num].getpeername()[1]]['abscissa'])) == True:
+		num += 1
+
+
 while win == False and loop and serveur_lance:
 
 # ------------------------------------ PARTIE SERVEUR ------------------------------------------------------------------
@@ -86,32 +116,7 @@ while win == False and loop and serveur_lance:
 ################################### FIRST ######################################
 	if first:
 		first = False
-		input('Appuyez sur une touche pour lancer la partie')
-
-		while i < 6:
-			connexions_demandees, wlist, xlist = select.select([connexion_principale], [], [], 0.05)
-
-			for connexion in connexions_demandees:
-				connexion_avec_client, infos_connexion = connexion.accept()
-				clients_connectes.append(connexion_avec_client)
-			i += 1
-
-		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
-		num = 0
-
-		while num < len(clients_connectes):
-			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-
-			bot = Robot(starting_position_of_the_robot, robot_representations[num], clients_connectes[num].getpeername()[1])
-			robot[clients_connectes[num].getpeername()[1]] = {}
-			robot[clients_connectes[num].getpeername()[1]]['object'] = bot
-			robot[clients_connectes[num].getpeername()[1]]['identifiant'] = bot.identifiant
-			robot[clients_connectes[num].getpeername()[1]]['representation'] = bot.representation
-			robot[clients_connectes[num].getpeername()[1]]['ordinate'] = bot.ordinate
-			robot[clients_connectes[num].getpeername()[1]]['abscissa'] = bot.abscissa
-
-			if labyrinth.positioning_is_validated((robot[clients_connectes[num].getpeername()[1]]['ordinate'], robot[clients_connectes[num].getpeername()[1]]['abscissa'])) == True:
-				num += 1
+		
 
 ################################ FIN FIRST #####################################
 
@@ -155,7 +160,7 @@ while win == False and loop and serveur_lance:
 				robot[client.getpeername()[1]]['object'].set_position(position)
 				robot[client.getpeername()[1]]['ordinate'] = robot[client.getpeername()[1]]['object'].ordinate
 				robot[client.getpeername()[1]]['abscissa'] = robot[client.getpeername()[1]]['object'].abscissa
-				labyrinth.clear_the_robot_in_maze(labyrinth.grille)
+				labyrinth.clear_the_robot_in_maze(labyrinth.grille, robot[client.getpeername()[1]]['representation'])
 				message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot)
 
 				if labyrinth.is_win(position):
