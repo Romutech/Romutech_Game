@@ -160,7 +160,7 @@ while win == False and loop and serveur_lance:
 
 				if labyrinth.is_win(position):
 					win = True
-					message = "\n\n  *  *  *\n   \ | /\n *-OOOO-*  *************************************\n  OOO      * Félicitations ! Vous avez gagné ! *\n OO        *************************************\nO\n"
+					message = "\n\n  *  *  *\n   \ | /\n *-OOOO-* \n  OOO      La partie a été gagnée par " + str(robot[client.getpeername()[1]]['representation']) + "\n OO        \nO\n"
 
 				for c in clients_connectes:
 					if len(msg_recu) > 0:
