@@ -16,7 +16,7 @@ from labyrinthe import Labyrinthe
 from class_robot.robot import Robot
 
 hote = ''
-port = 12800
+port = 12800 
 
 # On charge les cartes existantes
 cartes = []
@@ -105,10 +105,26 @@ while num < len(clients_connectes):
 		num += 1
 
 
+message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot)
+for client in clients_connectes:
+	client.send(message.encode())
+
+num = 0
+
+while num < len(clients_connectes):
+	message = "Votre robot est celui là : " + str(robot[clients_connectes[num].getpeername()[1]]['representation'])
+	clients_connectes[num].send(message.encode())
+	num += 1
+
+
 index = 0
 move = True
 go = True
 while win == False and loop:
+
+	for client in clients_connectes:
+		if clients_connectes[index].getpeername()[1] != client.getpeername()[1]:
+			client.send("\n\nAttendez votre tour pour jouer ! \n".encode())
 
 # ------------------------------------ PARTIE SERVEUR ------------------------------------------------------------------
 	
@@ -128,7 +144,7 @@ while win == False and loop:
 
 			client = clients_connectes[index]
 			
-			client.send("C'est à votre tour de jouer. Saisissez une lettre pour déplacer le robot 'n' 's' 'e' 'o' ou saisissez 'q' pour quitter le jeu: ".encode())
+			client.send("\nC'est à votre tour de jouer. Saisissez une lettre pour déplacer le robot 'n' 's' 'e' 'o' ou saisissez 'q' pour quitter le jeu: ".encode())
 
 			msg_recu = client.recv(1024)
 
@@ -139,7 +155,7 @@ while win == False and loop:
 			i = 0
 
 			if order.upper() == 'Q':
-				print('Fin du jeu ! Au revoir !')
+				print("\n\nFin du jeu ! Au revoir !\n")
 				loop = False
 				break
 
@@ -155,7 +171,7 @@ while win == False and loop:
 				position = robot[client.getpeername()[1]]['object'].displacement(order)
 
 				if labyrinth.positioning_is_validated(position) == False:
-					client.send("vous ne pouvez pas aller à cet endroit car un obstacle vous en empeche ! ".encode())
+					client.send("\n\nvous ne pouvez pas aller à cet endroit car un obstacle vous en empeche ! \n".encode())
 					move = False
 					break
 
@@ -172,6 +188,14 @@ while win == False and loop:
 				for c in clients_connectes:
 					if len(msg_recu) > 0:
 						c.send(message.encode())
+
+				for client in clients_connectes:
+					i = index + 1
+
+					if i >= len(clients_connectes):
+						i = 0
+					if clients_connectes[i].getpeername()[1] != client.getpeername()[1]:
+						client.send("\nAttendez votre tour pour jouer !\n".encode())
 
 				i += 1
 
