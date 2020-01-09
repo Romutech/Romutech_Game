@@ -40,7 +40,7 @@ number_of_cards = i + 1
 
 win = False
 loop = True
-first = True
+step = 1
 response = 'OUI'
 chosen_card = {}
 
@@ -77,138 +77,159 @@ num = 0
 
 msg_recu = ""
 
-input('Appuyez sur une touche pour lancer la partie')
-
-while i < 6:
-	connexions_demandees, wlist, xlist = select.select([connexion_principale], [], [], 0.05)
-
-	for connexion in connexions_demandees:
-		connexion_avec_client, infos_connexion = connexion.accept()
-		clients_connectes.append(connexion_avec_client)
-	i += 1
-
-labyrinth = Labyrinthe(chosen_card.labyrinthe, 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
-num = 0
-
-while num < len(clients_connectes):
-	starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-
-	bot = Robot(starting_position_of_the_robot, robot_representations[num], clients_connectes[num].getpeername()[1])
-	robot[clients_connectes[num].getpeername()[1]] = {}
-	robot[clients_connectes[num].getpeername()[1]]['object'] = bot
-	robot[clients_connectes[num].getpeername()[1]]['identifiant'] = bot.identifiant
-	robot[clients_connectes[num].getpeername()[1]]['representation'] = bot.representation
-	robot[clients_connectes[num].getpeername()[1]]['ordinate'] = bot.ordinate
-	robot[clients_connectes[num].getpeername()[1]]['abscissa'] = bot.abscissa
-
-	if labyrinth.positioning_is_validated((robot[clients_connectes[num].getpeername()[1]]['ordinate'], robot[clients_connectes[num].getpeername()[1]]['abscissa'])) == True:
-		num += 1
-
-
-message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot)
-for client in clients_connectes:
-	client.send(message.encode())
-
-num = 0
-
-while num < len(clients_connectes):
-	message = "Votre robot est celui là : " + str(robot[clients_connectes[num].getpeername()[1]]['representation'])
-	clients_connectes[num].send(message.encode())
-	num += 1
-
-
 index = 0
 move = True
 go = True
+
 while win == False and loop:
 
-	for client in clients_connectes:
-		if clients_connectes[index].getpeername()[1] != client.getpeername()[1]:
-			client.send("\n\nAttendez votre tour pour jouer ! \n".encode())
+	if step == 1:
 
-# ------------------------------------ PARTIE SERVEUR ------------------------------------------------------------------
-	
-	clients_a_lire = []
+		connexions_demandees, wlist, xlist = select.select([connexion_principale], [], [], 0.05)
 
-	try:
-		clients_a_lire, wlist, xlist = select.select(clients_connectes, [], [], 0.05)
+		for connexion in connexions_demandees:
+			connexion_avec_client, infos_connexion = connexion.accept()
+			clients_connectes.append(connexion_avec_client)
 		
-	except select.error:
-		pass
-	else:
-		msg_recu = ""
+		try:
+			clients_a_lire, wlist, xlist = select.select(clients_connectes, [], [], 0.05)
+		except select.error:
+			pass
+		else:
+			for client in clients_a_lire:
+				# Client est de type socket
+				msg_recu = client.recv(1024)
+				msg_recu = msg_recu.decode()
+
+				if msg_recu == 'c':
+					step = 2
+					client.send("\nLa partie commence !\n".encode())
+					break
+				
+				
+
+
+	if step == 2:
+
+		labyrinth = Labyrinthe(chosen_card.labyrinthe, 'O', '.', 'U', carte.nom, chosen_card.height, chosen_card.width)
+		num = 0
+
+		while num < len(clients_connectes):
+			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
+
+			bot = Robot(starting_position_of_the_robot, robot_representations[num], clients_connectes[num].getpeername()[1])
+			robot[clients_connectes[num].getpeername()[1]] = {}
+			robot[clients_connectes[num].getpeername()[1]]['object'] = bot
+			robot[clients_connectes[num].getpeername()[1]]['identifiant'] = bot.identifiant
+			robot[clients_connectes[num].getpeername()[1]]['representation'] = bot.representation
+			robot[clients_connectes[num].getpeername()[1]]['ordinate'] = bot.ordinate
+			robot[clients_connectes[num].getpeername()[1]]['abscissa'] = bot.abscissa
+
+			if labyrinth.positioning_is_validated((robot[clients_connectes[num].getpeername()[1]]['ordinate'], robot[clients_connectes[num].getpeername()[1]]['abscissa'])) == True:
+				num += 1
+
+
+		message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot)
+		for client in clients_connectes:
+			client.send(message.encode())
+
+		num = 0
+
+		while num < len(clients_connectes):
+			message = "Votre robot est celui là : " + str(robot[clients_connectes[num].getpeername()[1]]['representation'])
+			clients_connectes[num].send(message.encode())
+			num += 1
 
 
 
-		while True:
 
-			client = clients_connectes[index]
+		for client in clients_connectes:
+			if clients_connectes[index].getpeername()[1] != client.getpeername()[1]:
+				client.send("\n\nAttendez votre tour pour jouer ! \n".encode())
+
+	# ------------------------------------ PARTIE SERVEUR ------------------------------------------------------------------
+		
+		clients_a_lire = []
+
+		try:
+			clients_a_lire, wlist, xlist = select.select(clients_connectes, [], [], 0.05)
 			
-			client.send("\nC'est à votre tour de jouer. Saisissez une lettre pour déplacer le robot 'n' 's' 'e' 'o' ou saisissez 'q' pour quitter le jeu: ".encode())
+		except select.error:
+			pass
+		else:
+			msg_recu = ""
 
-			msg_recu = client.recv(1024)
 
-			msg_recu = msg_recu.decode()
-			print("Reçu {}".format(msg_recu))
 
-			order = msg_recu
-			i = 0
+			while True:
 
-			if order.upper() == 'Q':
-				print("\n\nFin du jeu ! Au revoir !\n")
-				loop = False
-				break
+				client = clients_connectes[index]
+				
+				client.send("\nC'est à votre tour de jouer. Saisissez une lettre pour déplacer le robot 'n' 's' 'e' 'o' ou saisissez 'q' pour quitter le jeu: ".encode())
 
-			if robot[client.getpeername()[1]]['object'].the_direction_is_valid(order) == False or robot[client.getpeername()[1]]['object'].number_of_move_box_is_valid(order) == False:
-				continue
+				msg_recu = client.recv(1024)
 
-			if len(order[1:]) == 0:
-				number_of_boxes = 1
-			else:
-				number_of_boxes = int(order[1:])
+				msg_recu = msg_recu.decode()
+				print("Reçu {}".format(msg_recu))
 
-			while i < number_of_boxes:
-				position = robot[client.getpeername()[1]]['object'].displacement(order)
+				order = msg_recu
+				i = 0
 
-				if labyrinth.positioning_is_validated(position) == False:
-					client.send("\n\nvous ne pouvez pas aller à cet endroit car un obstacle vous en empeche ! \n".encode())
-					move = False
+				if order.upper() == 'Q':
+					print("\n\nFin du jeu ! Au revoir !\n")
+					loop = False
 					break
 
-				robot[client.getpeername()[1]]['object'].set_position(position)
-				robot[client.getpeername()[1]]['ordinate'] = robot[client.getpeername()[1]]['object'].ordinate
-				robot[client.getpeername()[1]]['abscissa'] = robot[client.getpeername()[1]]['object'].abscissa
-				labyrinth.clear_the_robot_in_maze(labyrinth.grille, robot[client.getpeername()[1]]['representation'])
-				message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot)
-				move = True
-				if labyrinth.is_win(position):
-					win = True
-					message = "\n\n  *  *  *\n   \ | /\n *-OOOO-* \n  OOO      La partie a été gagnée par " + str(robot[client.getpeername()[1]]['representation']) + "\n OO        \nO\n"
+				if robot[client.getpeername()[1]]['object'].the_direction_is_valid(order) == False or robot[client.getpeername()[1]]['object'].number_of_move_box_is_valid(order) == False:
+					continue
 
-				for c in clients_connectes:
-					if len(msg_recu) > 0:
-						c.send(message.encode())
+				if len(order[1:]) == 0:
+					number_of_boxes = 1
+				else:
+					number_of_boxes = int(order[1:])
 
-				for client in clients_connectes:
-					i = index + 1
+				while i < number_of_boxes:
+					position = robot[client.getpeername()[1]]['object'].displacement(order)
 
-					if i >= len(clients_connectes):
-						i = 0
-					if clients_connectes[i].getpeername()[1] != client.getpeername()[1]:
-						client.send("\nAttendez votre tour pour jouer !\n".encode())
+					if labyrinth.positioning_is_validated(position) == False:
+						client.send("\n\nvous ne pouvez pas aller à cet endroit car un obstacle vous en empeche ! \n".encode())
+						move = False
+						break
 
-				i += 1
+					robot[client.getpeername()[1]]['object'].set_position(position)
+					robot[client.getpeername()[1]]['ordinate'] = robot[client.getpeername()[1]]['object'].ordinate
+					robot[client.getpeername()[1]]['abscissa'] = robot[client.getpeername()[1]]['object'].abscissa
+					labyrinth.clear_the_robot_in_maze(labyrinth.grille, robot[client.getpeername()[1]]['representation'])
+					message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot)
+					move = True
+					if labyrinth.is_win(position):
+						win = True
+						message = "\n\n  *  *  *\n   \ | /\n *-OOOO-* \n  OOO      La partie a été gagnée par " + str(robot[client.getpeername()[1]]['representation']) + "\n OO        \nO\n"
 
-			if move == True:
-				index += 1
-				move = False
-			
-			if index >= len(clients_connectes):
-				index = 0
-			
-		if len(msg_recu) > 0:
-			if msg_recu == "fin":
-				loop = False
+					for c in clients_connectes:
+						if len(msg_recu) > 0:
+							c.send(message.encode())
+
+					for client in clients_connectes:
+						i = index + 1
+
+						if i >= len(clients_connectes):
+							i = 0
+						if clients_connectes[i].getpeername()[1] != client.getpeername()[1]:
+							client.send("\nAttendez votre tour pour jouer !\n".encode())
+
+					i += 1
+
+				if move == True:
+					index += 1
+					move = False
+				
+				if index >= len(clients_connectes):
+					index = 0
+				
+			if len(msg_recu) > 0:
+				if msg_recu == "fin":
+					loop = False
 # ------------------------------------ FIN PARTIE SERVEUR --------------------------------------------------------------
 
 

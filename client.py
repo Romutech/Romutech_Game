@@ -12,6 +12,7 @@ program_execution = True
 connexion_avec_serveur = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 connexion_avec_serveur.connect((hote, port))
 print("Connexion établie avec le serveur sur le port {}".format(port))
+print('\nEntrez "c" pour commencer à jouer.\n')
 
 
 class main(Thread):
