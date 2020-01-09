@@ -107,6 +107,7 @@ while num < len(clients_connectes):
 
 index = 0
 move = True
+go = True
 while win == False and loop:
 
 # ------------------------------------ PARTIE SERVEUR ------------------------------------------------------------------
@@ -126,7 +127,8 @@ while win == False and loop:
 		while True:
 
 			client = clients_connectes[index]
-
+			
+			client.send("C'est à votre tour de jouer. Saisissez une lettre pour déplacer le robot 'n' 's' 'e' 'o' ou saisissez 'q' pour quitter le jeu: ".encode())
 
 			msg_recu = client.recv(1024)
 
