@@ -43,10 +43,12 @@ class Labyrinthe:
             while i < grid_width:
                 for robot in robots:
                     if j == robots[robot]['ordinate'] and i == robots[robot]['abscissa']:
+                        self.grille[(j,i)] = robots[robot]['representation']
                         lab += robots[robot]['representation']
                         robot_present = True
                 
                 if robot_present == False:
+                    self.grille[(j,i)] =  grid_map[j, i]
                     lab += grid_map[j, i]
                 robot_present = False
                 i += 1
@@ -73,12 +75,12 @@ class Labyrinthe:
         return (randrange(0, self.width -1), randrange(0, self.height -1))
 
 
-    def clear_the_robot_in_maze(self, labyrinth):
+    def clear_the_robot_in_maze(self, labyrinth, robot):
 
         """Erase robot in labyrinth and It takes as parameter the labyrinth dictionary"""
 
         for value in labyrinth:
-            if labyrinth[value] == self.robot:
+            if labyrinth[value] == robot:
                 self.grille[value] = ' '
 
 
@@ -87,7 +89,7 @@ class Labyrinthe:
         """Check that the position is valid and take as parameter the dictionary labyrinth.
         It returns a boolean."""
 
-        if self.grille[position] != self.obstacles:
+        if self.grille[position] == ' ' or self.grille[position] == '.':
             return True
         return False
 

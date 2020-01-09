@@ -25,7 +25,7 @@ class main(Thread):
         msg_a_envoyer = b""
         while msg_a_envoyer != b"fin" and self.program_execution:
 
-            msg_a_envoyer = str(input("Saisissez une lettre pour déplacer le robot 'n' 's' 'e' 'o' ou saisissez 'q' pour quitter le jeu: "))
+            msg_a_envoyer = str(input(""))
             # Peut planter si vous tapez des caractères spéciaux
             msg_a_envoyer = msg_a_envoyer.encode()
             # On envoie le message
