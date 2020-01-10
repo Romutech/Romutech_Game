@@ -66,11 +66,6 @@ class Labyrinthe:
         It takes as parameter the labyrinth dictionary
         Returns the position of the robot in a tuple (ordinate, abcisse)"""
 
-        for value in labyrinth:
-            if labyrinth[value] == self.robot:
-                return value[0], value[1]
-
-        # if the robot was not found on the map, this position is determined randomly
         print ("définition aléatoire de la position du robot")
         return (randrange(0, self.width -1), randrange(0, self.height -1))
 
@@ -89,7 +84,7 @@ class Labyrinthe:
         """Check that the position is valid and take as parameter the dictionary labyrinth.
         It returns a boolean."""
 
-        if self.grille[position] == ' ' or self.grille[position] == '.':
+        if self.grille[position] == ' ' or self.grille[position] == self.doors or self.grille[position] == self.exit:
             return True
         return False
 
