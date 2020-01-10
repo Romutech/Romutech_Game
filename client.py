@@ -37,7 +37,7 @@ class main(Thread):
         self.program_execution = False
         return "program stop"
         
-                    
+
 class listener(Thread):
     def __init__(self, connexion_avec_serveur, thread):
         Thread.__init__(self)

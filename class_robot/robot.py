@@ -16,6 +16,7 @@ class Robot:
         self.cardinal_points = {"North": 'N', "South": 'S', "East": 'E',"West": 'O'}
         self.representation = representation
         self.identifiant = identifiant
+        self.wall_status = True
 
 
     def __repr__(self):
@@ -24,6 +25,32 @@ class Robot:
 
     def __getitem__(self, position):
     	return (self.ordinate, self.abscissa)
+
+
+    def wall(self, direction, lab):
+        if self.wall_status == False:
+            return "\n!!!!!! Vous avez déjà utilisé ce sort !!!!!!"
+        i = 0
+        ordinate = self.ordinate
+        abscissa = self.abscissa
+
+        letter = str(direction[0])
+   
+        if letter.upper() == self.cardinal_points['North']:
+            ordinate -= 1
+        elif letter.upper() == self.cardinal_points['South']:
+            ordinate += 1
+        elif letter.upper() == self.cardinal_points['East']:
+            abscissa += 1
+        elif letter.upper() == self.cardinal_points['West']:
+            abscissa -= 1
+
+        if lab.grille[(ordinate, abscissa)] != '.':
+            return "\n!!!!!! Vous ne pouvez que murer une porte et pas autre chose !!!!!!"
+
+        lab.grille[(ordinate, abscissa)] = 'O'
+        self.wall_status = False
+        return "\n!!!!!!Vous avez utilisé votre sort qui permet de transformer une porte en mur !!!!!!"
 
 
     def displacement(self, direction):
@@ -71,7 +98,7 @@ class Robot:
         It takes as parameter a string of characters
         It returns a boolean"""
 
-        message = "Vous n'avez pas saisie une direction valide, \nveuillez choisir \"n\" pour nord, \"s\" pour sud \"e\" pour est \"o\" pour ouest."
+        message = "\n!!!!!! Vous n'avez pas saisie une direction valide, \nveuillez choisir \"n\" pour nord, \"s\" pour sud \"e\" pour est \"o\" pour ouest. !!!!!!"
         try:
             letter = str(direction[0])
         except Exception as e:
