@@ -26,7 +26,7 @@ class Labyrinthe:
         self.width = width
         self.height = height
 
-    def show(self, grid_map, grid_height, grid_width, robots):
+    def show(self, grid_map, grid_height, grid_width, robots, labyrinthe):
 
         """This function displays the labyrinth
         It takes in parameters a dictionary representing the labyrinth,
@@ -70,14 +70,16 @@ class Labyrinthe:
         return (randrange(0, self.width -1), randrange(0, self.height -1))
 
 
-    def clear_the_robot_in_maze(self, labyrinth, robot):
+    def clear_the_robot_in_maze(self, labyrinth, robot, chosen_labyrinthe):
 
         """Erase robot in labyrinth and It takes as parameter the labyrinth dictionary"""
 
         for value in labyrinth:
             if labyrinth[value] == robot:
-                self.grille[value] = ' '
-
+                if chosen_labyrinthe[value] == '.':
+                    self.grille[value] = '.'
+                else:
+                    self.grille[value] = ' '
 
     def positioning_is_validated(self, position):
 

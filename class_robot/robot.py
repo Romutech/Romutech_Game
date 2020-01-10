@@ -16,6 +16,7 @@ class Robot:
         self.cardinal_points = {"North": 'N', "South": 'S', "East": 'E',"West": 'O'}
         self.representation = representation
         self.identifiant = identifiant
+        self.wall_status = True
 
 
     def __repr__(self):
@@ -25,6 +26,27 @@ class Robot:
     def __getitem__(self, position):
     	return (self.ordinate, self.abscissa)
 
+
+    def wall(self, direction, lab):
+        if self.wall_status == False:
+            return False 
+        i = 0
+        ordinate = self.ordinate
+        abscissa = self.abscissa
+
+        letter = str(direction[0])
+   
+        if letter.upper() == self.cardinal_points['North']:
+            ordinate -= 1
+        elif letter.upper() == self.cardinal_points['South']:
+            ordinate += 1
+        elif letter.upper() == self.cardinal_points['East']:
+            abscissa += 1
+        elif letter.upper() == self.cardinal_points['West']:
+            abscissa -= 1
+
+        lab.grille[(ordinate, abscissa)] = 'O'
+        return True
 
     def displacement(self, direction):
 
