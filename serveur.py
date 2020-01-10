@@ -158,45 +158,45 @@ while win == False and loop:
 					break
 
 				if order[0].upper() == 'M':
-					robot[client.getpeername()[1]]['object'].wall(order[1], labyrinth)
-					continue
+					message = robot[client.getpeername()[1]]['object'].wall(order[1], labyrinth)
+					order = ''
+	
+				if len(order) != 0:
+					if robot[client.getpeername()[1]]['object'].the_direction_is_valid(order) == False or robot[client.getpeername()[1]]['object'].number_of_move_box_is_valid(order) == False:
+						continue
 
-				if robot[client.getpeername()[1]]['object'].the_direction_is_valid(order) == False or robot[client.getpeername()[1]]['object'].number_of_move_box_is_valid(order) == False:
-					continue
+					if len(order[1:]) == 0:
+						number_of_boxes = 1
+					else:
+						number_of_boxes = int(order[1:])
+
+					move = False
+
+					while i < number_of_boxes:
+
+						position = robot[client.getpeername()[1]]['object'].displacement(order)
+
+						if labyrinth.is_win(position):
+							win = True
+							message = "\n\n  *  *  *\n   \ | /\n *-OOOO-* \n  OOO      La partie a été gagnée par " + str(robot[client.getpeername()[1]]['representation']) + "\n OO        \nO\n"
+							
+							for client in clients_connectes:
+								client.send(message.encode())
+								client.send("fin".encode())
+							break
+
+						if labyrinth.positioning_is_validated(position) == False:
+							client.send("\n\nvous ne pouvez pas aller à cet endroit car un obstacle vous en empeche ! \n".encode())
+							break
+
+						robot[client.getpeername()[1]]['object'].set_position(position)
+						robot[client.getpeername()[1]]['ordinate'] = robot[client.getpeername()[1]]['object'].ordinate
+						robot[client.getpeername()[1]]['abscissa'] = robot[client.getpeername()[1]]['object'].abscissa
 
 
-				if len(order[1:]) == 0:
-					number_of_boxes = 1
-				else:
-					number_of_boxes = int(order[1:])
-
-				move = False
-
-				while i < number_of_boxes:
-
-					position = robot[client.getpeername()[1]]['object'].displacement(order)
-
-					if labyrinth.is_win(position):
-						win = True
-						message = "\n\n  *  *  *\n   \ | /\n *-OOOO-* \n  OOO      La partie a été gagnée par " + str(robot[client.getpeername()[1]]['representation']) + "\n OO        \nO\n"
-						
-						for client in clients_connectes:
-							client.send(message.encode())
-							client.send("fin".encode())
-						break
-
-					if labyrinth.positioning_is_validated(position) == False:
-						client.send("\n\nvous ne pouvez pas aller à cet endroit car un obstacle vous en empeche ! \n".encode())
-						break
-
-					robot[client.getpeername()[1]]['object'].set_position(position)
-					robot[client.getpeername()[1]]['ordinate'] = robot[client.getpeername()[1]]['object'].ordinate
-					robot[client.getpeername()[1]]['abscissa'] = robot[client.getpeername()[1]]['object'].abscissa
-
-
-					labyrinth.clear_the_robot_in_maze(labyrinth.grille, robot[client.getpeername()[1]]['representation'], copy_chosen_card_grille.labyrinthe)
-					move = True
-					i += 1
+						labyrinth.clear_the_robot_in_maze(labyrinth.grille, robot[client.getpeername()[1]]['representation'], copy_chosen_card_grille.labyrinthe)
+						move = True
+						i += 1
 
 				if win == False:
 					message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot, chosen_card.labyrinthe)

@@ -45,8 +45,13 @@ class Robot:
         elif letter.upper() == self.cardinal_points['West']:
             abscissa -= 1
 
+        if lab.grille[(ordinate, abscissa)] != '.':
+            return "Vous ne pouvez que murer une porte et pas autre chose"
+
         lab.grille[(ordinate, abscissa)] = 'O'
-        return True
+        self.wall_status = False
+        return "Vous avez utilisé votre sort qui permet de transformer une porte en mur"
+
 
     def displacement(self, direction):
 
