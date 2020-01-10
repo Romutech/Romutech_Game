@@ -89,7 +89,7 @@ class Labyrinthe:
         """Check that the position is valid and take as parameter the dictionary labyrinth.
         It returns a boolean."""
 
-        if self.grille[position] == ' ' or self.grille[position] == '.':
+        if self.grille[position] == ' ' or self.grille[position] == '.' or self.grille[position] == 'U':
             return True
         return False
 

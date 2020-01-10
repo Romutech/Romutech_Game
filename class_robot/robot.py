@@ -28,7 +28,6 @@ class Robot:
 
     def displacement(self, direction):
 
-        print('dep')
         """Function allowing the robot to move according to the requested direction.
         It takes as parameter a string of characters"""
 
