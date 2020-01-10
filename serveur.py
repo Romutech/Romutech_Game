@@ -41,13 +41,11 @@ number_of_cards = i + 1
 win = False
 loop = True
 step = 1
-response = 'OUI'
 chosen_card = {}
 
 while True:
 	try:
 		choose = int(input("\nEntrez un numéro de labyrinthe pour commencer à jouer : "))
-
 		if 0 == choose :
 			raise IndexError
 
@@ -69,18 +67,12 @@ clients_connectes = []
 robot = {}
 robot_representations = ['X', 'x', 'Y', 'y', 'Z']
 i = 0
-num = 0
-
 msg_recu = ""
-
 index = 0
 move = True
-go = True
 
 while win == False and loop:
-
 	if step == 1:
-
 		connexions_demandees, wlist, xlist = select.select([connexion_principale], [], [], 0.05)
 
 		for connexion in connexions_demandees:
@@ -93,17 +85,13 @@ while win == False and loop:
 			pass
 		else:
 			for client in clients_a_lire:
-				# Client est de type socket
 				msg_recu = client.recv(1024)
 				msg_recu = msg_recu.decode()
 
-				if msg_recu == 'c':
+				if msg_recu.upper() == 'C':
 					step = 2
 					client.send("\nLa partie commence !\n".encode())
 					break
-				
-				
-
 
 	if step == 2:
 
@@ -112,7 +100,6 @@ while win == False and loop:
 
 		while num < len(clients_connectes):
 			starting_position_of_the_robot = labyrinth.determine_starting_position_from_map(labyrinth.grille)
-
 			bot = Robot(starting_position_of_the_robot, robot_representations[num], clients_connectes[num].getpeername()[1])
 			robot[clients_connectes[num].getpeername()[1]] = {}
 			robot[clients_connectes[num].getpeername()[1]]['object'] = bot
@@ -124,11 +111,10 @@ while win == False and loop:
 			if labyrinth.positioning_is_validated((robot[clients_connectes[num].getpeername()[1]]['ordinate'], robot[clients_connectes[num].getpeername()[1]]['abscissa'])) == True:
 				num += 1
 
-
 		message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot)
+
 		for client in clients_connectes:
 			client.send(message.encode())
-
 		num = 0
 
 		while num < len(clients_connectes):
@@ -136,13 +122,9 @@ while win == False and loop:
 			clients_connectes[num].send(message.encode())
 			num += 1
 
-
-
-
 		for client in clients_connectes:
 			if clients_connectes[index].getpeername()[1] != client.getpeername()[1]:
 				client.send("\n\nAttendez votre tour pour jouer ! \n".encode())
-
 		
 		clients_a_lire = []
 
@@ -154,20 +136,11 @@ while win == False and loop:
 		else:
 			msg_recu = ""
 
-
-
 			while True:
-
 				client = clients_connectes[index]
-				
 				client.send("\nC'est à votre tour de jouer. Saisissez une lettre pour déplacer le robot 'n' 's' 'e' 'o' ou saisissez 'q' pour quitter le jeu: ".encode())
-
 				msg_recu = client.recv(1024)
-
-				msg_recu = msg_recu.decode()
-				print("Reçu {}".format(msg_recu))
-
-				order = msg_recu
+				order = msg_recu.decode()
 				i = 0
 
 				if order.upper() == 'Q':
@@ -211,7 +184,9 @@ while win == False and loop:
 				if win == False:
 					message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot)
 				
-				
+				if win:
+					break
+
 				for c in clients_connectes:
 					if len(msg_recu) > 0:
 						c.send(message.encode())
@@ -224,22 +199,12 @@ while win == False and loop:
 					if clients_connectes[i].getpeername()[1] != client.getpeername()[1]:
 						client.send("\nAttendez votre tour pour jouer !\n".encode())
 
-					
-
-				if win:
-					break
-
 				if move == True:
 					index += 1
 					move = False
 				
 				if index >= len(clients_connectes):
 					index = 0
-				
-			if len(msg_recu) > 0:
-				if msg_recu == "fin":
-					loop = False
-
 
 print("Fermeture des connexions")
 
