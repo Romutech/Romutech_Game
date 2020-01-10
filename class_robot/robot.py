@@ -29,7 +29,7 @@ class Robot:
 
     def wall(self, direction, lab):
         if self.wall_status == False:
-            return False 
+            return "\n!!!!!! Vous avez déjà utilisé ce sort !!!!!!"
         i = 0
         ordinate = self.ordinate
         abscissa = self.abscissa
@@ -46,11 +46,11 @@ class Robot:
             abscissa -= 1
 
         if lab.grille[(ordinate, abscissa)] != '.':
-            return "Vous ne pouvez que murer une porte et pas autre chose"
+            return "\n!!!!!! Vous ne pouvez que murer une porte et pas autre chose !!!!!!"
 
         lab.grille[(ordinate, abscissa)] = 'O'
         self.wall_status = False
-        return "Vous avez utilisé votre sort qui permet de transformer une porte en mur"
+        return "\n!!!!!!Vous avez utilisé votre sort qui permet de transformer une porte en mur !!!!!!"
 
 
     def displacement(self, direction):
@@ -98,7 +98,7 @@ class Robot:
         It takes as parameter a string of characters
         It returns a boolean"""
 
-        message = "Vous n'avez pas saisie une direction valide, \nveuillez choisir \"n\" pour nord, \"s\" pour sud \"e\" pour est \"o\" pour ouest."
+        message = "\n!!!!!! Vous n'avez pas saisie une direction valide, \nveuillez choisir \"n\" pour nord, \"s\" pour sud \"e\" pour est \"o\" pour ouest. !!!!!!"
         try:
             letter = str(direction[0])
         except Exception as e:

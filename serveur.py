@@ -160,6 +160,7 @@ while win == False and loop:
 				if order[0].upper() == 'M':
 					message = robot[client.getpeername()[1]]['object'].wall(order[1], labyrinth)
 					order = ''
+					client.send(message.encode())
 	
 				if len(order) != 0:
 					if robot[client.getpeername()[1]]['object'].the_direction_is_valid(order) == False or robot[client.getpeername()[1]]['object'].number_of_move_box_is_valid(order) == False:
