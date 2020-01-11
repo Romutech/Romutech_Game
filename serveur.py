@@ -1,11 +1,5 @@
 # -*-coding:Utf-8 -*
 
-"""Ce fichier contient le code principal du jeu.
-
-Exécutez-le avec Python pour lancer le jeu.
-
-"""
-
 import os
 import socket
 import select
@@ -18,7 +12,6 @@ from class_robot.robot import Robot
 hote = ''
 port = 12800 
 
-# On charge les cartes existantes
 cartes = []
 car = []
 for nom_fichier in os.listdir("cartes"):
@@ -27,24 +20,21 @@ for nom_fichier in os.listdir("cartes"):
         nom_carte = nom_fichier[:-3].lower()
         with open(chemin, "r") as fichier:
             contenu = fichier.read()
-            # Création d'une carte, à compléter
             cartes.append(Carte(nom_carte, contenu))
             car.append(Carte(nom_carte, contenu))
 
-# On affiche les cartes existantes
 print("Labyrinthes existants :")
 for i, carte in enumerate(cartes):
     print("  {} - {}".format(i + 1, carte.nom))
 
 number_of_cards = i + 1
 
-#continuation of the program
-
 win = False
 loop = True
 step = 1
 chosen_card = {}
 copy_chosen_card_grille = {}
+
 while True:
 	try:
 		choose = int(input("\nEntrez un numéro de labyrinthe pour commencer à jouer : "))
@@ -65,7 +55,6 @@ connexion_principale = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 connexion_principale.bind((hote, port))
 connexion_principale.listen(5)
 print("Le serveur écoute à présent sur le port {}".format(port))
-
 
 clients_connectes = []
 robot = {}
@@ -117,10 +106,7 @@ while win == False and loop:
 			if labyrinth.positioning_is_validated((robot[clients_connectes[num].getpeername()[1]]['ordinate'], robot[clients_connectes[num].getpeername()[1]]['abscissa'])) == True:
 				num += 1
 
-
-
 		message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot, chosen_card.labyrinthe)
-
 
 		for client in clients_connectes:
 			client.send(message.encode())
@@ -179,11 +165,9 @@ while win == False and loop:
 						number_of_boxes = 1
 					else:
 						number_of_boxes = int(order[1:])
-
 					move = False
 
 					while i < number_of_boxes:
-
 						position = robot[client.getpeername()[1]]['object'].displacement(order)
 
 						if labyrinth.is_win(position):
@@ -202,7 +186,6 @@ while win == False and loop:
 						robot[client.getpeername()[1]]['object'].set_position(position)
 						robot[client.getpeername()[1]]['ordinate'] = robot[client.getpeername()[1]]['object'].ordinate
 						robot[client.getpeername()[1]]['abscissa'] = robot[client.getpeername()[1]]['object'].abscissa
-
 
 						labyrinth.clear_the_robot_in_maze(labyrinth.grille, robot[client.getpeername()[1]]['representation'], copy_chosen_card_grille.labyrinthe)
 						move = True
