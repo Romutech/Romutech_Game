@@ -18,7 +18,7 @@ class Robot:
         self.identifiant = identifiant
         self.wall_status = True
         self.door_status = True
-
+        self.door_status = True
 
     def __repr__(self):
         return "identifiant : " + str(self.identifiant) + " abcissse : " + str(self.abscissa) + " ordonné : " + str(self.ordinate) + " representé par : " + str(self.representation)
@@ -46,15 +46,15 @@ class Robot:
         elif letter.upper() == self.cardinal_points['West']:
             abscissa -= 1
 
-        if lab.grille[(ordinate, abscissa)] != '.':
-            return "\n!!!!!! Vous ne pouvez que murer une porte et pas autre chose !!!!!!"
+        if lab.grille[(ordinate, abscissa)] != '.' or ordinate <= 0 or abscissa <= 0 or abscissa >= lab.width - 2 or ordinate >= lab.height:
+            return "\n!!!!!! Vous ne pouvez pas murer ceci !!!!!!"
 
         lab.grille[(ordinate, abscissa)] = 'O'
         self.wall_status = False
         return "\n!!!!!!Vous avez utilisé votre sort qui permet de transformer une porte en mur !!!!!!"
 
     def door(self, direction, lab):
-        if self.wall_status == False:
+        if self.door_status == False:
             return "\n!!!!!! Vous avez déjà utilisé ce sort !!!!!!"
         i = 0
         ordinate = self.ordinate
@@ -71,11 +71,12 @@ class Robot:
         elif letter.upper() == self.cardinal_points['West']:
             abscissa -= 1
 
-        if lab.grille[(ordinate, abscissa)] != 'O':
-            return "\n!!!!!! Vous ne pouvez mettre une porte dans un mur et pas autre chose !!!!!!"
+
+        if lab.grille[(ordinate, abscissa)] != 'O' or ordinate <= 0 or abscissa <= 0 or abscissa >= lab.width - 2 or ordinate >= lab.height:
+            return "\n!!!!!! Vous ne pouvez mettre une porte à cet endroit !!!!!!"
 
         lab.grille[(ordinate, abscissa)] = '.'
-        self.wall_status = False
+        self.door_status = False
         return "\n!!!!!!Vous avez utilisé votre sort qui permet de transformer un mur en porte !!!!!!"
 
 

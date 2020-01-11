@@ -39,7 +39,7 @@ class Labyrinthe:
         i = 0 # abscissa
         j = 0 # ordinate
         lab = "\n"
-        while j < grid_height -1:
+        while j < grid_height:
             while i < grid_width:
                 for robot in robots:
                     if j == robots[robot]['ordinate'] and i == robots[robot]['abscissa']:
