@@ -159,15 +159,19 @@ while win == False and loop:
 
 				if order[0].upper() == 'M':
 					message = robot[client.getpeername()[1]]['object'].wall(order[1], labyrinth)
-					order = ''
+					order = 'M'
 					client.send(message.encode())
-
+					message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot, chosen_card.labyrinthe)
+					client.send(message.encode())
+					
 				if order[0].upper() == 'P':
 					message = robot[client.getpeername()[1]]['object'].door(order[1], labyrinth)
-					order = ''
+					order = 'P'
 					client.send(message.encode())
-	
-				if len(order) != 0:
+					message = labyrinth.show(labyrinth.grille, chosen_card.height, chosen_card.width, robot, chosen_card.labyrinthe)
+					client.send(message.encode())
+					
+				if order != 'P' or order != 'M':
 					if robot[client.getpeername()[1]]['object'].the_direction_is_valid(order) == False or robot[client.getpeername()[1]]['object'].number_of_move_box_is_valid(order) == False:
 						continue
 
