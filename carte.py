@@ -40,26 +40,3 @@ class Carte:
             self.height = j + 1
 
         return grille
-
-    def convert_labyrinth_from_dictionary_to_string(self, dictionnary, grid_height, grid_width):
-
-        """converts dictionary-type labyrinth into a character string"""
-
-        i = 0 # abscissa
-        j = 0 # ordinate
-
-        string_map = ""
-
-        while j < grid_width:
-
-            while i < grid_height:
-                string_map += dictionnary[j, i]
-                i += 1
-
-            string_map += "\n"
-
-            i = 0
-            j += 1
-
-        self.labyrinthe = self.creer_labyrinthe_depuis_chaine(string_map)
-

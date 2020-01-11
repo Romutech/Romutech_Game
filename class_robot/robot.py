@@ -18,7 +18,6 @@ class Robot:
         self.identifiant = identifiant
         self.wall_status = True
         self.door_status = True
-        self.door_status = True
 
     def __repr__(self):
         return "identifiant : " + str(self.identifiant) + " abcissse : " + str(self.abscissa) + " ordonné : " + str(self.ordinate) + " representé par : " + str(self.representation)
