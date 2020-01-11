@@ -17,6 +17,7 @@ class Robot:
         self.representation = representation
         self.identifiant = identifiant
         self.wall_status = True
+        self.door_status = True
 
 
     def __repr__(self):
@@ -51,6 +52,31 @@ class Robot:
         lab.grille[(ordinate, abscissa)] = 'O'
         self.wall_status = False
         return "\n!!!!!!Vous avez utilisé votre sort qui permet de transformer une porte en mur !!!!!!"
+
+    def door(self, direction, lab):
+        if self.wall_status == False:
+            return "\n!!!!!! Vous avez déjà utilisé ce sort !!!!!!"
+        i = 0
+        ordinate = self.ordinate
+        abscissa = self.abscissa
+
+        letter = str(direction[0])
+   
+        if letter.upper() == self.cardinal_points['North']:
+            ordinate -= 1
+        elif letter.upper() == self.cardinal_points['South']:
+            ordinate += 1
+        elif letter.upper() == self.cardinal_points['East']:
+            abscissa += 1
+        elif letter.upper() == self.cardinal_points['West']:
+            abscissa -= 1
+
+        if lab.grille[(ordinate, abscissa)] != 'O':
+            return "\n!!!!!! Vous ne pouvez mettre une porte dans un mur et pas autre chose !!!!!!"
+
+        lab.grille[(ordinate, abscissa)] = '.'
+        self.wall_status = False
+        return "\n!!!!!!Vous avez utilisé votre sort qui permet de transformer un mur en porte !!!!!!"
 
 
     def displacement(self, direction):
